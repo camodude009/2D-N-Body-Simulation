@@ -19,6 +19,7 @@ public class Game extends Canvas implements Runnable{
 	private int fps = 0, tps = 0;
 	
 	
+	
 	public Game(String[] args) {
 		//initiate
 		for(String s: args){
@@ -31,16 +32,22 @@ public class Game extends Canvas implements Runnable{
 		gamestate = new Gamestate();
 	}
 	
+	
+	
 	public void start(){	    
 	    running = true;
 	    thread = new Thread(this);
 	    thread.start();
 	}
 	
+	
+	
 	public synchronized void stop() {
 		running = false;
 	    thread.stop();
 	}
+	
+	
 	
 	public void run() {
 		long lastTime = System.nanoTime();
@@ -90,6 +97,8 @@ public class Game extends Canvas implements Runnable{
 	private void tick() {
 		gamestate.tick();
 	}
+	
+	
 	
 	private void render() {
 		//getting buffer strategy
