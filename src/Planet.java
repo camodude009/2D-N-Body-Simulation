@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Planet {
 
-	private double x,y,vX,vY,aX,aY,m,p,r,f; //x,y coordinates, speed, mass, density, radius
+	private double x,y,vX,vY,aX,aY,aXOld,aYOld,m,p,r,f; //x,y coordinates, speed, mass, density, radius
 	private Gamestate gamestate;
 	
 	public Planet(double x, double y, double vX, double vY, double m, double p, Color color, Gamestate gamestate){
@@ -58,6 +58,8 @@ public class Planet {
 	public void tickVerlet(double t){
 		
 		//acceleration		
+		aXOld = aX;
+		aYOld = aY;
 		aX = 0;
 		aY = 0;
 		for(Planet p : gamestate.getThePlanets()){
@@ -68,14 +70,9 @@ public class Planet {
 			}
 		}
 		
-		//velocity 1/2 way
-		vX += 0.5*aX*t;
-		vY += 0.5*aY*t;
-		
-		
 		//position
-		x += t*vX;
-		y += t*vY;
+		x += (t*vX)+(0.5*aX*t*t);
+		y += (t*vY)+(0.5*aY*t*t);
 		
 		//acceleration		
 		aX = 0;
@@ -88,9 +85,9 @@ public class Planet {
 			}
 		}
 		
-		//velocity 1/2 way
-		vX += 0.5*aX*t;
-		vY += 0.5*aY*t;	
+		//velocity
+		vX += 0.5*(aX + aXOld)*t;
+		vY += 0.5*(aY + aYOld)*t;
 		
 	}
 	
