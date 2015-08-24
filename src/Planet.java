@@ -33,8 +33,19 @@ public class Planet {
 	}
 	
 	public void tickEuler(double t){
-		
-		//acceleration		
+		updateAccelerationEuler();		
+		updateVelocityEuler(t);		
+		updatePositionEuler(t);
+	}
+	
+	public void tickVerlet(double t){
+		updateAccelerationVerlet();
+		updatePositionVerlet(t);
+		updateAccelerationVerlet();
+		updateVelocityVerlet(t);
+	}
+	
+	public void updateAccelerationEuler(){
 		aX = 0;
 		aY = 0;
 		for(Planet p : gamestate.getThePlanets()){
@@ -44,20 +55,19 @@ public class Planet {
 				aY += (getDY(p)/getD(p)*a);
 			}
 		}
-		
-		//velocity
-		vX += aX*t;
-		vY += aY*t;
-		
-		//position
-		x += vX*t;
-		y += vY*t;
-		
 	}
 	
-	public void tickVerlet(double t){
-		
-		//acceleration		
+	public void updateVelocityEuler(double t){
+		vX += aX*t;
+		vY += aY*t;
+	}
+	
+	public void updatePositionEuler(double t){
+		x += vX*t;
+		y += vY*t;
+	}
+	
+	public void updateAccelerationVerlet(){	
 		aXOld = aX;
 		aYOld = aY;
 		aX = 0;
@@ -69,26 +79,16 @@ public class Planet {
 				aY += (getDY(p)/getD(p)*a);
 			}
 		}
-		
-		//position
+	}
+	
+	public void updatePositionVerlet(double t){
 		x += (t*vX)+(0.5*aX*t*t);
 		y += (t*vY)+(0.5*aY*t*t);
-		
-		//acceleration		
-		aX = 0;
-		aY = 0;
-		for(Planet p : gamestate.getThePlanets()){
-			if(p != this){
-				double a = p.getM()/getDS(p);
-				aX += (getDX(p)/getD(p)*a);
-				aY += (getDY(p)/getD(p)*a);
-			}
-		}
-		
-		//velocity
+	}
+	
+	public void updateVelocityVerlet(double t){
 		vX += 0.5*(aX + aXOld)*t;
 		vY += 0.5*(aY + aYOld)*t;
-		
 	}
 	
 	public double getX() {
