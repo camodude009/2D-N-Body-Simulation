@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
@@ -8,21 +9,15 @@ public class Gamestate {
 	private static int simMode = 0;
 	private static double stepsPerTick = 1;
 	
-	
-	
 	public Gamestate(){
 		thePlanets = new ArrayList<Planet>();
 	}
 	
-	
-	
-	public void render(Graphics g) {
+	public void render(Graphics g) {	
 		for(Planet p : thePlanets){
 			p.render(g);
 		}
 	}
-
-	
 	
 	public void tick() { //updates planets "stepsPerTick" times
 		for(int i = 0; i < stepsPerTick; i++){
@@ -31,9 +26,7 @@ public class Gamestate {
 			}
 		}
 	}
-
-
-
+	
 	public ArrayList<Planet> getThePlanets() {
 		return thePlanets;
 	}

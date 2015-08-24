@@ -9,7 +9,7 @@ import javax.swing.JFrame;
 
 public class Game extends Canvas implements Runnable{
 	
-	public final static Dimension DIMENSIONS = new Dimension(900, 900);
+	public final static Dimension DIMENSIONS = new Dimension(1200, 900);
 	public JFrame frame;
 	public final String NAME = "2D-N-Body-Simulation";
 	private boolean debug = false;
@@ -17,8 +17,6 @@ public class Game extends Canvas implements Runnable{
 	private Thread thread;
 	private Gamestate gamestate;
 	private int fps = 0, tps = 0;
-	
-	
 	
 	public Game(String[] args) {
 		//initiate
@@ -30,9 +28,41 @@ public class Game extends Canvas implements Runnable{
 			}
 		}
 		gamestate = new Gamestate();
+		test();
 	}
 	
-	
+	public void test(){
+		gamestate.addPlanet(new Planet(
+            600,                    //x
+            400,                    //y
+            -1.35,                  //vX
+            -2,                     //vY
+            1000,                   //Mass
+            1,                      //Density
+            Color.black,            //Color
+            gamestate     		    //gameState
+	        ));
+        gamestate.addPlanet(new Planet(
+            320,       			    //x
+            400,                    //y
+            0.675,                  //vX
+            1,                      //vY
+            1000,                   //Mass
+            1,                      //Density
+            Color.black,            //Color
+            gamestate               //gameState
+        ));
+        gamestate.addPlanet(new Planet(
+            880,         		    //x
+            400,                    //y
+            0.675,                  //vX
+            1,                      //vY
+            1000,                   //Mass
+            1,                      //Density
+            Color.black,            //Color
+            gamestate		        //gameState
+        ));
+	}
 	
 	public void start(){	    
 	    running = true;
@@ -40,14 +70,10 @@ public class Game extends Canvas implements Runnable{
 	    thread.start();
 	}
 	
-	
-	
 	public synchronized void stop() {
 		running = false;
 	    thread.stop();
 	}
-	
-	
 	
 	public void run() {
 		long lastTime = System.nanoTime();
@@ -98,8 +124,6 @@ public class Game extends Canvas implements Runnable{
 		gamestate.tick();
 	}
 	
-	
-	
 	private void render() {
 		//getting buffer strategy
 		BufferStrategy strategy = this.getBufferStrategy(); 		
@@ -115,7 +139,7 @@ public class Game extends Canvas implements Runnable{
 	    gamestate.render(g);
 	    if(debug){
 	    	g.setColor(Color.black);
-	    	g.drawString("Fps: " + fps + " Tps: " + tps, 20, 20);
+	    	g.drawString("Tps: " + tps + " Fps: " + fps, 20, 20);
 	    }
 	    
 	    //disposing of the graphics object and sending image to video card   

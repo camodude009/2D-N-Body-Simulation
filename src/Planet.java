@@ -1,14 +1,12 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 
 public class Planet {
 
-	private double x,y,vX,vY,aX,aY,aXOld,aYOld,m,p,r,f; //x,y coordinates, speed, mass, density, radius
-	private Color color; //planet color
+	private double x,y,vX,vY,aX,aY,m,p,r,f; //x,y coordinates, speed, mass, density, radius
 	private Gamestate gamestate;
-	
-	
 	
 	public Planet(double x, double y, double vX, double vY, double m, double p, Color color, Gamestate gamestate){
 		this.x = x;
@@ -17,9 +15,10 @@ public class Planet {
 		this.vY = vY;
 		this.m = m;
 		this.p = p;
+		this.gamestate = gamestate;
 		calculateRadius();
 	}
-
+	
 	public void tick(int simMode, double t){
 		switch (simMode){
 			case 0:
@@ -33,13 +32,9 @@ public class Planet {
 		}
 	}
 	
-	
-	
 	public void tickEuler(double t){
 		
 		//acceleration		
-		aXOld = aX;
-		aYOld = aY;
 		aX = 0;
 		aY = 0;
 		for(Planet p : gamestate.getThePlanets()){
@@ -58,10 +53,44 @@ public class Planet {
 		x += vX*t;
 		y += vY*t;
 		
-		
 	}
 	
 	public void tickVerlet(double t){
+		
+		//acceleration		
+		aX = 0;
+		aY = 0;
+		for(Planet p : gamestate.getThePlanets()){
+			if(p != this){
+				double a = p.getM()/getDS(p);
+				aX += (getDX(p)/getD(p)*a);
+				aY += (getDY(p)/getD(p)*a);
+			}
+		}
+		
+		//velocity 1/2 way
+		vX += 0.5*aX*t;
+		vY += 0.5*aY*t;
+		
+		
+		//position
+		x += t*vX;
+		y += t*vY;
+		
+		//acceleration		
+		aX = 0;
+		aY = 0;
+		for(Planet p : gamestate.getThePlanets()){
+			if(p != this){
+				double a = p.getM()/getDS(p);
+				aX += (getDX(p)/getD(p)*a);
+				aY += (getDY(p)/getD(p)*a);
+			}
+		}
+		
+		//velocity 1/2 way
+		vX += 0.5*aX*t;
+		vY += 0.5*aY*t;	
 		
 	}
 	
@@ -101,12 +130,6 @@ public class Planet {
 	public void setP(double p) {
 		this.p = p;
 	}
-	public Color getColor() {
-		return color;
-	}
-	public void setColor(Color color) {
-		this.color = color;
-	}
 	public double getR() {
 		return r;
 	}
@@ -115,10 +138,10 @@ public class Planet {
 	}
 
 	private double getDX(Planet p){
-		return this.x-p.getX();
+		return p.getX()-this.x;
 	}
 	private double getDY(Planet p){
-		return this.y-p.getY();
+		return p.getY()-this.y;
 	}
 	private double getDS(Planet p){
 		return (getDX(p)*getDX(p) + getDY(p)*getDY(p));
@@ -128,10 +151,8 @@ public class Planet {
 	}
 	
 	public void render(Graphics g) { //draws a circle
-		g.setColor(color);
+		g.setColor(Color.black);
 	    g.fillOval((int)(x-r),(int)(y-r),(int)(r*2),(int)(r*2));
 	}
-	
-	
 	
 }
