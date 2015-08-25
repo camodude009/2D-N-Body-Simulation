@@ -7,7 +7,7 @@ import java.awt.image.BufferStrategy;
 import javax.swing.JFrame;
 
 
-public class Game extends Canvas implements Runnable{
+public class Sim extends Canvas implements Runnable{
 	
 	public final static Dimension DIMENSIONS = new Dimension(1200, 900);
 	public JFrame frame;
@@ -15,10 +15,10 @@ public class Game extends Canvas implements Runnable{
 	private boolean debug = false;
 	private boolean running = false;
 	private Thread thread;
-	private Gamestate gamestate;
+	private Simstate simstate;
 	private int fps = 0, tps = 0;
 	
-	public Game(String[] args) {
+	public Sim(String[] args) {
 		//initiate
 		for(String s: args){
 			switch (s){
@@ -27,12 +27,12 @@ public class Game extends Canvas implements Runnable{
 					break;
 			}
 		}
-		gamestate = new Gamestate();
+		simstate = new Simstate();
 		test();
 	}
 	
 	public void test(){
-		gamestate.addPlanet(new Planet(
+		simstate.addPlanet(new Planet(
             600,                    //x
             400,                    //y
             -1.35,                  //vX
@@ -40,9 +40,9 @@ public class Game extends Canvas implements Runnable{
             1000,                   //Mass
             1,                      //Density
             Color.black,            //Color
-            gamestate     		    //gameState
+            simstate     		    //gameState
 	        ));
-        gamestate.addPlanet(new Planet(
+        simstate.addPlanet(new Planet(
             320,       			    //x
             400,                    //y
             0.675,                  //vX
@@ -50,9 +50,9 @@ public class Game extends Canvas implements Runnable{
             1000,                   //Mass
             1,                      //Density
             Color.black,            //Color
-            gamestate               //gameState
+            simstate               //gameState
         ));
-        gamestate.addPlanet(new Planet(
+        simstate.addPlanet(new Planet(
             880,         		    //x
             400,                    //y
             0.675,                  //vX
@@ -60,7 +60,7 @@ public class Game extends Canvas implements Runnable{
             1000,                   //Mass
             1,                      //Density
             Color.black,            //Color
-            gamestate		        //gameState
+            simstate		        //gameState
         ));
 	}
 	
@@ -121,7 +121,7 @@ public class Game extends Canvas implements Runnable{
 	}
 	
 	private void tick() {
-		gamestate.tick();
+		simstate.tick();
 	}
 	
 	private void render() {
@@ -136,7 +136,7 @@ public class Game extends Canvas implements Runnable{
 	    //drawcalls	    
 	    g.setColor(Color.white);
 	    g.fillRect(0,0,DIMENSIONS.width,DIMENSIONS.height); //filling background white
-	    gamestate.render(g);
+	    simstate.render(g);
 	    if(debug){
 	    	g.setColor(Color.black);
 	    	g.drawString("Tps: " + tps + " Fps: " + fps, 20, 20);

@@ -6,16 +6,16 @@ import java.util.ArrayList;
 public class Planet {
 
 	private double x,y,vX,vY,aX,aY,aXOld,aYOld,m,p,r,f; //x,y coordinates, speed, mass, density, radius
-	private Gamestate gamestate;
+	private Simstate simstate;
 	
-	public Planet(double x, double y, double vX, double vY, double m, double p, Color color, Gamestate gamestate){
+	public Planet(double x, double y, double vX, double vY, double m, double p, Color color, Simstate simstate){
 		this.x = x;
 		this.y = y;
 		this.vX = vX;
 		this.vY = vY;
 		this.m = m;
 		this.p = p;
-		this.gamestate = gamestate;
+		this.simstate = simstate;
 		calculateRadius();
 	}
 	
@@ -48,7 +48,7 @@ public class Planet {
 	public void updateAccelerationEuler(){
 		aX = 0;
 		aY = 0;
-		for(Planet p : gamestate.getThePlanets()){
+		for(Planet p : simstate.getThePlanets()){
 			if(p != this){
 				double a = p.getM()/getDS(p);
 				aX += (getDX(p)/getD(p)*a);
@@ -72,7 +72,7 @@ public class Planet {
 		aYOld = aY;
 		aX = 0;
 		aY = 0;
-		for(Planet p : gamestate.getThePlanets()){
+		for(Planet p : simstate.getThePlanets()){
 			if(p != this){
 				double a = p.getM()/getDS(p);
 				aX += (getDX(p)/getD(p)*a);

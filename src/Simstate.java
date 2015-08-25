@@ -3,13 +3,13 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 
 
-public class Gamestate {
+public class Simstate {
 
 	private ArrayList<Planet> thePlanets;
 	private static int simMode = 0;
 	private static double stepsPerTick = 1;
 	
-	public Gamestate(){
+	public Simstate(){
 		thePlanets = new ArrayList<Planet>();
 	}
 	
