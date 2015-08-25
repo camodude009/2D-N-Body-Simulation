@@ -3,27 +3,28 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
 
-public class Sim extends Canvas implements Runnable{
+public class Graph extends Canvas implements Runnable{
 	
 	public JFrame frame;
 	private final static Dimension DIMENSIONS = new Dimension(1200, 900);
-	private final String NAME = "2D-N-Body-Simulation";
+	private final String NAME = "Graph";
 	private boolean debug = false;
 	private boolean running = false;
 	private Thread thread;
 	private int fps = 0, tps = 0;
 	
-	private Simstate simstate;
+	private ArrayList<Point> thePoints;
 	
-	public Sim(boolean d) {
+	public Graph(boolean d) {
 		debug = d;
 		init();
 		
-		simstate = new Simstate();
+		thePoints = new ArrayList<Point>();
 	}
 	
 	public void init(){
@@ -107,7 +108,7 @@ public class Sim extends Canvas implements Runnable{
 	}
 	
 	private void tick() {
-		simstate.tick();
+		
 	}
 	
 	private void render() {
@@ -122,7 +123,7 @@ public class Sim extends Canvas implements Runnable{
 	    //drawcalls	    
 	    g.setColor(Color.white);
 	    g.fillRect(0,0,DIMENSIONS.width,DIMENSIONS.height); //filling background white
-	    simstate.render(g);
+	    plot(g);
 	    if(debug){
 	    	g.setColor(Color.black);
 	    	g.drawString("Tps: " + tps + " Fps: " + fps, 20, 20);
@@ -133,37 +134,8 @@ public class Sim extends Canvas implements Runnable{
 	    strategy.show();
 	}
 	
-	public void test(){
-		simstate.addPlanet(new Planet(
-            600,                    //x
-            400,                    //y
-            -1.35,                  //vX
-            -2,                     //vY
-            1000,                   //Mass
-            1,                      //Density
-            Color.black,            //Color
-            simstate     		    //gameState
-	        ));
-        simstate.addPlanet(new Planet(
-            320,       			    //x
-            400,                    //y
-            0.675,                  //vX
-            1,                      //vY
-            1000,                   //Mass
-            1,                      //Density
-            Color.black,            //Color
-            simstate               //gameState
-        ));
-        simstate.addPlanet(new Planet(
-            880,         		    //x
-            400,                    //y
-            0.675,                  //vX
-            1,                      //vY
-            1000,                   //Mass
-            1,                      //Density
-            Color.black,            //Color
-            simstate		        //gameState
-        ));
+	public void plot(Graphics g){
+		
 	}
 	
 }
