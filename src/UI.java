@@ -12,13 +12,25 @@ public class UI {
 		in = new BufferedReader(new InputStreamReader(System.in));
 	}
 	
-	public static String[] readLine(){
-		String line = "";
+	public static String[][] readLine(){
+		//reading input from console
+		String input = " ";
 		try {
-			line = in.readLine();
+			input = in.readLine();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return line.split(" ");
+		
+		//splitting it into segments at each '-'
+		String[] commands;
+		commands = input.split("-");
+		
+		//splitting each segment into further segments at each ' '
+		String[][] arguments = new String[commands.length-1][];
+		for (int i = 1; i < commands.length; i++){
+			String s = commands[i];
+			arguments[i-1] = s.split(" ");
+		}
+		return arguments;
 	}
 }
