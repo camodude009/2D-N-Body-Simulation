@@ -22,8 +22,6 @@ public class Main {
 	    sim.test();    
 	    
 	    String[] test = FileReader.readFile("test1.pl");
-	    for(String s: test){
-	    	System.out.println(s);
-	    }
+	    FileWriter.writeFile("test2.pl", test);
 	}
 }
