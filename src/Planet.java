@@ -7,7 +7,7 @@ public class Planet {
 	private double x,y,vX,vY,aX,aY,aXOld,aYOld,m,p,r,f; //x,y coordinates, speed, mass, density, radius
 	private Simstate simstate;
 	
-	public Planet(double x, double y, double vX, double vY, double m, double p, Color color, Simstate simstate){
+	public Planet(double x, double y, double vX, double vY, double m, double p, Simstate simstate){
 		this.x = x;
 		this.y = y;
 		this.vX = vX;

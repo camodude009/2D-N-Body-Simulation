@@ -142,7 +142,6 @@ public class Sim extends Canvas implements Runnable{
             -2,						//vY
             1000/Sim.G,				//Mass
             1,						//Density
-            Color.black,			//Color
             simstate				//gameState
 	        ));
         simstate.addPlanet(new Planet(
@@ -152,7 +151,6 @@ public class Sim extends Canvas implements Runnable{
             1,						//vY
             1000/Sim.G,				//Mass
             1,						//Density
-            Color.black,			//Color
             simstate				//gameState
         ));
         simstate.addPlanet(new Planet(
@@ -162,7 +160,6 @@ public class Sim extends Canvas implements Runnable{
             1,						//vY
             1000/Sim.G,				//Mass
             1,						//Density
-            Color.black,			//Color
             simstate				//gameState
         ));
 	}
