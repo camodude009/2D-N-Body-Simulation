@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,7 +19,7 @@ public class FileReader {
 				URL url = FileReader.class.getClassLoader().getResource(fileName);
 				Path path = Paths.get(url.toURI());
 				//reading the file
-				lines = Files.readAllLines(path);
+				lines = Files.readAllLines(path, StandardCharsets.UTF_8);
 			} catch (IOException | URISyntaxException e) {
 				e.printStackTrace();
 			}
