@@ -50,7 +50,7 @@ public class Planet {
 		aY = 0;
 		for(Planet p : simstate.getThePlanets()){
 			if(p != this){
-				double a = p.getM()/getDS(p);
+				double a = Sim.G*p.getM()/getDS(p);
 				aX += (getDX(p)/getD(p)*a);
 				aY += (getDY(p)/getD(p)*a);
 			}
@@ -74,7 +74,7 @@ public class Planet {
 		aY = 0;
 		for(Planet p : simstate.getThePlanets()){
 			if(p != this){
-				double a = p.getM()/getDS(p);
+				double a = Sim.G*p.getM()/getDS(p);
 				aX += (getDX(p)/getD(p)*a);
 				aY += (getDY(p)/getD(p)*a);
 			}
@@ -115,6 +115,12 @@ public class Planet {
 	public void setvY(double vY) {
 		this.vY = vY;
 	}
+	private double getVS(){
+		return (vX*vX)+(vY*vY);
+	}
+	private double getV(){
+		return Math.sqrt(getVS());
+	}
 	public double getM() {
 		return m;
 	}
@@ -131,9 +137,8 @@ public class Planet {
 		return r;
 	}
 	private void calculateRadius() {
-		r = Math.pow((Math.abs((4*m)/(3*Math.PI*p))), (1.0/3.0));
+		r = Math.pow((Math.abs((4*m*Sim.G)/(3*Math.PI*p))), (1.0/3.0));
 	}
-
 	private double getDX(Planet p){
 		return p.getX()-this.x;
 	}
@@ -145,6 +150,12 @@ public class Planet {
 	}
 	private double getD(Planet p){
 		return Math.sqrt(getDS(p));
+	}
+	private double getEKin(){
+		return 0.5*m*getVS();
+	}
+	private double getEPot(Planet p){
+		return Sim.G*m*p.getM()/getD(p);
 	}
 	
 	public void render(Graphics g) { //draws a circle

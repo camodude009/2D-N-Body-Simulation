@@ -18,6 +18,7 @@ public class Sim extends Canvas implements Runnable{
 	private int fps = 0, tps = 0;
 	
 	private Simstate simstate;
+	public final static double G = 6.67408*Math.pow(10, -11);
 	
 	public Sim(boolean d) {
 		debug = d;
@@ -135,34 +136,34 @@ public class Sim extends Canvas implements Runnable{
 	
 	public void test(){
 		simstate.addPlanet(new Planet(
-            600,                    //x
-            400,                    //y
-            -1.35,                  //vX
-            -2,                     //vY
-            1000,                   //Mass
-            1,                      //Density
-            Color.black,            //Color
-            simstate     		    //gameState
+            600,					//x
+            400,					//y
+            -1.35,					//vX
+            -2,						//vY
+            1000/Sim.G,				//Mass
+            1,						//Density
+            Color.black,			//Color
+            simstate				//gameState
 	        ));
         simstate.addPlanet(new Planet(
-            320,       			    //x
-            400,                    //y
-            0.675,                  //vX
-            1,                      //vY
-            1000,                   //Mass
-            1,                      //Density
-            Color.black,            //Color
-            simstate               //gameState
+            320,					//x
+            400,					//y
+            0.675,					//vX
+            1,						//vY
+            1000/Sim.G,				//Mass
+            1,						//Density
+            Color.black,			//Color
+            simstate				//gameState
         ));
         simstate.addPlanet(new Planet(
-            880,         		    //x
-            400,                    //y
-            0.675,                  //vX
-            1,                      //vY
-            1000,                   //Mass
-            1,                      //Density
-            Color.black,            //Color
-            simstate		        //gameState
+            880,					//x
+            400,					//y
+            0.675,					//vX
+            1,						//vY
+            1000/Sim.G,				//Mass
+            1,						//Density
+            Color.black,			//Color
+            simstate				//gameState
         ));
 	}
 	
