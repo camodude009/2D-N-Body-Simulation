@@ -1,6 +1,5 @@
+import java.nio.file.Paths;
 import java.util.Arrays;
-
-
 
 
 
@@ -21,6 +20,12 @@ public class Main {
 	    Graph graph = new Graph(debug);
 	    graph.start();
 	    
-	    sim.test();
+	    //debug
+	    sim.test();    
+	    
+	    String[] test = FileReader.readFile("test1.pl");
+	    for(String s: test){
+	    	System.out.println(s);
+	    }
 	}
 }

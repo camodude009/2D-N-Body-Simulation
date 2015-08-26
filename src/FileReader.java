@@ -1,17 +1,27 @@
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FileReader {
 	
-		public static String[] readFile(){
-			//reads all lines
+		//reads files located in bin
+		public static String[] readFile(String fileName){
+			//array for lines
 			List<String> lines = new ArrayList<String>();
 			try {
-				lines = Files.readAllLines(Paths.get("/test1.pl"));
-			} catch (IOException e) {
+				//converting the relative file name to an absolute URL and then to a Path
+				URL url = FileReader.class.getClassLoader().getResource(fileName);
+				Path path = Paths.get(url.toURI());
+				//reading the file
+				lines = Files.readAllLines(path);
+			} catch (IOException | URISyntaxException e) {
 				e.printStackTrace();
 			}
 			//ignores lines that start with '//'
@@ -21,7 +31,11 @@ public class FileReader {
 					commands.add(line);
 				}
 			}
-			String[] r = (String[]) commands.toArray();
+			
+			String[] r = new String[commands.size()];
+			for(int i = 0; i < commands.size(); i++){
+				r[i] = commands.get(i);
+			}
 			return r;
 		}
 }
