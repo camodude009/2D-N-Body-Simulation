@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class UI {
 	
-	private static BufferedReader in = new BufferedReader(new InputStreamReader(System.in))
+	private static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 	
 	public static String[] readLine(){
 		//reading input from console
