@@ -1,8 +1,7 @@
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -10,15 +9,13 @@ import java.nio.file.Paths;
 
 public class FileWriter {
 
-	//writes to a file located in the same folder as the jar
+	//writes to a file located in the same folder the jar is launched from
 	public static void writeFile(String fileName, String[] lines){
 		try {
-			//converting the relative file name to an absolute URL and then to a Path
-			URL url = FileReader.class.getProtectionDomain().getCodeSource().getLocation();
-			//path of the directory
-			Path dirPath = Paths.get(url.toURI());
-			//path of the file we are trying to create
-			Path path = Paths.get(dirPath.toString(), fileName);
+			//getting the Path of the file
+			File file = new File(".");
+			Path path = Paths.get(file.getAbsolutePath(), fileName);
+			//creating the PrintWriter
 			OutputStream out = Files.newOutputStream(path);
 			PrintWriter writer = new PrintWriter(out);
 			//writing the file
@@ -27,7 +24,7 @@ public class FileWriter {
 				writer.println(s);
 			}
 			writer.close();
-		} catch (URISyntaxException | IOException e) {
+		} catch (IOException e) {
 			System.out.println("error writing file");
 		}
 	}
