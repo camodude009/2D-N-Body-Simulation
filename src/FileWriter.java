@@ -28,7 +28,7 @@ public class FileWriter {
 			}
 			writer.close();
 		} catch (URISyntaxException | IOException e) {
-			e.printStackTrace();
+			System.out.println("error writing file");
 		}
 	}
 }

@@ -19,12 +19,15 @@ public class UI {
 		//splitting it into segments at each '-'
 		String[] commands;
 		commands = input.split("/");
-		
-		//removing "" in Array
-		String[] r = new String[commands.length-1];
-		for(int i = 1; i < commands.length; i++){
-			r[i-1] = commands[i];
+		//removing the first entry ("") in the Array (if the Array has one) 
+		if(commands.length > 0){
+			String[] r = new String[commands.length-1];
+			for(int i = 1; i < commands.length; i++){
+				r[i-1] = commands[i];
+			}
+			return r;
+		}else{
+			return new String[0];
 		}
-		return r;
 	}
 }

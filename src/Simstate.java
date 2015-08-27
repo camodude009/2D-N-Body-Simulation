@@ -26,12 +26,21 @@ public class Simstate {
 		}
 	}
 	
-	public ArrayList<Planet> getThePlanets() {
+	public void addPlanet(double x, double y, double vX, double vY, double m, double p){
+		thePlanets.add(new Planet(x, y, vX, vY, m, p, this));
+	}
+	
+	public ArrayList<Planet> getPlanets() {
 		return thePlanets;
 	}
 	
-	public void addPlanet(Planet p){
-		thePlanets.add(p);
+	public String[] getPlanetsAsText(){
+		String[] r = new String[thePlanets.size()];
+		for(int i = 0; i < thePlanets.size(); i++){
+			Planet p = thePlanets.get(i);
+			r[i] = "addplanet " + p.getX() + " " + p.getY() + " " + p.getvX() + " " + p.getvY() + " " + p.getM() + " " + p.getP();
+		}
+		return r;
 	}
 
 }

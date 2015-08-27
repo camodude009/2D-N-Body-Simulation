@@ -18,7 +18,9 @@ public class Sim extends Canvas implements Runnable{
 	private int fps = 0, tps = 0;
 	
 	private Simstate simstate;
+	private boolean paused = true;
 	public final static double G = 6.67408*Math.pow(10, -11);
+	
 	
 	public Sim(boolean d) {
 		debug = d;
@@ -80,7 +82,7 @@ public class Sim extends Canvas implements Runnable{
 		    //update queue
 		    while (unprocessed >= 1) {
 			    ticks++;
-			    tick();
+			    if(!paused) tick();
 			    unprocessed --;
 			    shouldRender = true;
 		    }
@@ -93,7 +95,7 @@ public class Sim extends Canvas implements Runnable{
 		    //render
 		    if (shouldRender) {
 		    	frames++;
-		    	render();
+		    	if(!paused) render();
 		    }
 		    //fps timer
 		    if (System.currentTimeMillis() - lastTick >= 1000) {
@@ -134,34 +136,24 @@ public class Sim extends Canvas implements Runnable{
 	    strategy.show();
 	}
 	
-	public void test(){
-		simstate.addPlanet(new Planet(
-            600,					//x
-            400,					//y
-            -1.35,					//vX
-            -2,						//vY
-            1000/Sim.G,				//Mass
-            1,						//Density
-            simstate				//gameState
-	        ));
-        simstate.addPlanet(new Planet(
-            320,					//x
-            400,					//y
-            0.675,					//vX
-            1,						//vY
-            1000/Sim.G,				//Mass
-            1,						//Density
-            simstate				//gameState
-        ));
-        simstate.addPlanet(new Planet(
-            880,					//x
-            400,					//y
-            0.675,					//vX
-            1,						//vY
-            1000/Sim.G,				//Mass
-            1,						//Density
-            simstate				//gameState
-        ));
+	public boolean pause(){
+		paused = !paused;
+		return paused;
+	}
+	public boolean getPaused(){
+		return paused;
+	}
+	
+	public void addPlanet(double x, double y, double vX, double vY, double m, double p){
+		simstate.addPlanet(x, y, vX, vY, m, p);
+		render();
+	}
+	public String[] getPlanetsAsText(){
+		return simstate.getPlanetsAsText();
+	}
+	
+	public void reset(){
+		simstate = new Simstate();
 	}
 	
 }

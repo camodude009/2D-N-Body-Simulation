@@ -19,6 +19,7 @@ public class Graph extends Canvas implements Runnable{
 	private int fps = 0, tps = 0;
 	
 	private ArrayList<Point> thePoints;
+	private boolean paused = true;
 	
 	public Graph(boolean d) {
 		debug = d;
@@ -80,7 +81,7 @@ public class Graph extends Canvas implements Runnable{
 		    //update queue
 		    while (unprocessed >= 1) {
 			    ticks++;
-			    tick();
+			    if(!paused) tick();
 			    unprocessed --;
 			    shouldRender = true;
 		    }
@@ -93,7 +94,7 @@ public class Graph extends Canvas implements Runnable{
 		    //render
 		    if (shouldRender) {
 		    	frames++;
-		    	render();
+		    	if(!paused) render();
 		    }
 		    //fps timer
 		    if (System.currentTimeMillis() - lastTick >= 1000) {
@@ -136,6 +137,18 @@ public class Graph extends Canvas implements Runnable{
 	
 	public void plot(Graphics g){
 		
+	}
+	
+	public boolean pause(){
+		paused = !paused;
+		return paused;
+	}
+	public boolean getPaused(){
+		return paused;
+	}
+	
+	public void addPoint(Point p){
+		thePoints.add(p);
 	}
 	
 }

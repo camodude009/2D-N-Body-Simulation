@@ -22,13 +22,13 @@ public class FileReader {
 			System.out.println(path);
 			//reading the file
 			lines = Files.readAllLines(path, StandardCharsets.UTF_8);
-		} catch (IOException | URISyntaxException e) {
-			e.printStackTrace();
+		} catch (NullPointerException | IOException | URISyntaxException e) {
+			System.out.println("error reading file");
 		}
-		//ignores lines that start with '//'
+		//ignores lines that start with '--'
 		ArrayList<String> commands =  new ArrayList<String>();
 		for (String line : lines) {
-			if(!line.startsWith("//")){
+			if(!line.startsWith("--")){
 				commands.add(line);
 			}
 		}

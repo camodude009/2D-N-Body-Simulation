@@ -47,7 +47,7 @@ public class Planet {
 	public void updateAccelerationEuler(){
 		aX = 0;
 		aY = 0;
-		for(Planet p : simstate.getThePlanets()){
+		for(Planet p : simstate.getPlanets()){
 			if(p != this){
 				double a = Sim.G*p.getM()/getDS(p);
 				aX += (getDX(p)/getD(p)*a);
@@ -71,7 +71,7 @@ public class Planet {
 		aYOld = aY;
 		aX = 0;
 		aY = 0;
-		for(Planet p : simstate.getThePlanets()){
+		for(Planet p : simstate.getPlanets()){
 			if(p != this){
 				double a = Sim.G*p.getM()/getDS(p);
 				aX += (getDX(p)/getD(p)*a);
