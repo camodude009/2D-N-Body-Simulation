@@ -18,7 +18,7 @@ public class UI {
 		
 		//splitting it into segments at each '-'
 		String[] commands;
-		commands = input.split("-");
+		commands = input.split("/");
 		
 		//removing "" in Array
 		String[] r = new String[commands.length-1];
