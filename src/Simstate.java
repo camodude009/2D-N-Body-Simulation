@@ -5,32 +5,45 @@ import java.util.ArrayList;
 public class Simstate {
 
 	private ArrayList<Planet> thePlanets;
+	private ArrayList<int[][]> history;
 	private static int simMode = 0;
-	private static double stepsPerTick = 1;
 	
 	public Simstate(){
 		thePlanets = new ArrayList<Planet>();
+		history = new ArrayList<int[][]>();
 	}
 	
-	public void render(Graphics g) {	
+	public void render(Graphics g) {
+		//rendering planets
 		for(Planet p : thePlanets){
 			p.render(g);
 		}
-	}
-	
-	public void tick() { //updates planets "stepsPerTick" times
-		for(int i = 0; i < stepsPerTick; i++){
-			switch (simMode){
-			case 0:
-				tickEuler(1.0/(double)stepsPerTick);
-				break;
-			case 1:
-				tickEuler(1.0/(double)stepsPerTick);
-				break;
-			case 2:
-				break;
+		//for every step
+		for(int i = 1; i < history.size()-1; i++){
+			int[][]t = history.get(i);
+			//drawing lines between past positions of planets
+			for (int j = 0; j < t.length; j++){
+				g.drawLine(	history.get(i-1)[j][0],
+							history.get(i-1)[j][1],
+							history.get(i)[j][0],
+							history.get(i)[j][1]
+						);
 			}
 		}
+	}
+	
+	public void tick(double stepSize) { //updates planets
+		switch (simMode){
+		case 0:
+			tickEuler(stepSize);
+			break;
+		case 1:
+			tickEuler(stepSize);
+			break;
+		case 2:
+			break;
+		}
+		history.add(getPlanetPositions());
 	}
 	
 	public void tickEuler(double t){
@@ -48,6 +61,7 @@ public class Simstate {
 	
 	public void addPlanet(double x, double y, double vX, double vY, double m, double p){
 		thePlanets.add(new Planet(x, y, vX, vY, m, p, this));
+		history = new ArrayList<int[][]>();
 	}
 	
 	public ArrayList<Planet> getPlanets() {
@@ -59,6 +73,15 @@ public class Simstate {
 		for(int i = 0; i < thePlanets.size(); i++){
 			Planet p = thePlanets.get(i);
 			r[i] = "addplanet " + p.getX() + " " + p.getY() + " " + p.getvX() + " " + p.getvY() + " " + p.getM() + " " + p.getP();
+		}
+		return r;
+	}
+	
+	public int[][] getPlanetPositions(){
+		int[][]r = new int[thePlanets.size()][2];
+		for(int i = 0; i < thePlanets.size(); i++){
+			r[i][0] = (int) thePlanets.get(i).getX();
+			r[i][1] = (int) thePlanets.get(i).getY();
 		}
 		return r;
 	}

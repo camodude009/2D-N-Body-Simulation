@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
@@ -17,15 +18,13 @@ public class Sim extends Canvas implements Runnable{
 	private Thread thread;
 	private int fps = 0, tps = 0;
 	
+	public final static double G = 6.67408*Math.pow(10, -11);
 	private Simstate simstate;
 	private boolean paused = true;
-	public final static double G = 6.67408*Math.pow(10, -11);
-	
 	
 	public Sim(boolean d) {
 		debug = d;
 		init();
-		
 		simstate = new Simstate();
 	}
 	
@@ -110,7 +109,7 @@ public class Sim extends Canvas implements Runnable{
 	}
 	
 	private void tick() {
-		simstate.tick();
+		simstate.tick(1.0);
 	}
 	
 	private void render() {
@@ -122,10 +121,14 @@ public class Sim extends Canvas implements Runnable{
 	    }	    
 	    Graphics g = strategy.getDrawGraphics(); //getting the graphics object
 	    
-	    //drawcalls	    
+	    //drawcalls	
+	    
+	    //background
 	    g.setColor(Color.white);
 	    g.fillRect(0,0,DIMENSIONS.width,DIMENSIONS.height); //filling background white
+	    //rendering simstate
 	    simstate.render(g);
+	    //rendering debug fps/tps
 	    if(debug){
 	    	g.setColor(Color.black);
 	    	g.drawString("Tps: " + tps + " Fps: " + fps, 20, 20);
