@@ -55,8 +55,8 @@ public class Planet {
 	}
 	
 	public void updatePositionVerlet(double t){
-		x += (t*vX)+(0.5*aX*t*t);
-		y += (t*vY)+(0.5*aY*t*t);
+		x += t*(vX+(0.5*aX*t));
+		y += t*(vY+(0.5*aY*t));
 	}
 	
 	public void updateVelocityVerlet(double t){

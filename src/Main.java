@@ -50,6 +50,8 @@ public class Main {
 			reset();
 		}else if(cmd[0].equals("speed")){ //reset
 			speed(args);
+		}else if(cmd[0].equals("algo")){ //reset
+			changeAlgorithm(args);
 		}else{
 			System.out.println(ERROR_INVALID_COMMAND);
 		}
@@ -76,7 +78,7 @@ public class Main {
 				double y = Double.parseDouble(args[1]);
 				double vX = Double.parseDouble(args[2]);
 				double vY = Double.parseDouble(args[3]);
-				double m = 1000/Sim.G;//Double.parseDouble(args[4]);
+				double m = Double.parseDouble(args[4]); //1000/Sim.G;
 				double p = Double.parseDouble(args[5]);
 				sim.addPlanet(x, y, vX, vY, m, p);
 				System.out.println("planet created");
@@ -117,6 +119,14 @@ public class Main {
 			}
 		}else{
 			System.out.println(ERROR_SIM_NOT_PAUSED);
+		}
+	}
+	public static void changeAlgorithm(String[] args){
+		try{
+			int a = Integer.parseInt(args[0]);
+			sim.changeAlgorithm(a);
+		}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
+			System.out.println(ERROR_INVALID_COMMAND);
 		}
 	}
 	

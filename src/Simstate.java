@@ -6,7 +6,7 @@ public class Simstate {
 
 	private ArrayList<Planet> thePlanets;
 	private ArrayList<int[][]> history;
-	private static int simMode = 0;
+	private static int algorithm = 0;
 	
 	public Simstate(){
 		thePlanets = new ArrayList<Planet>();
@@ -33,23 +33,24 @@ public class Simstate {
 	}
 	
 	public void tick(double t) { //updates planets
-		switch (simMode){
+		switch (algorithm){
 		case 0:
 			tickEuler(t);
 			break;
 		case 1:
 			tickVerlet(t);
 			break;
-		case 2:
+		default:
+			tickEuler(t);
 			break;
 		}
 		history.add(getPlanetPositions());
 	}
 	
 	public void tickEuler(double t){
-		for(Planet p: thePlanets) p.updateAccelerationEuler();		
-		for(Planet p: thePlanets) p.updateVelocityEuler(t);		
+		for(Planet p: thePlanets) p.updateAccelerationEuler();
 		for(Planet p: thePlanets) p.updatePositionEuler(t);
+		for(Planet p: thePlanets) p.updateVelocityEuler(t);	
 	}
 	
 	public void tickVerlet(double t){
@@ -86,4 +87,19 @@ public class Simstate {
 		return r;
 	}
 
+	public void setAlgorithm(int a){
+		switch (a){
+			case 0:
+				algorithm = a;
+				System.out.println("using euler");
+				break;
+			case 1:
+				algorithm = a;
+				System.out.println("using verlet");
+				break;
+			default:
+				System.out.println("invalid algorithm");
+				break;
+		}
+	}
 }

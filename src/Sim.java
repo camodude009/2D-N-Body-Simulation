@@ -158,6 +158,8 @@ public class Sim extends Canvas implements Runnable{
 	
 	public void reset(){
 		simstate = new Simstate();
+		render();
+		System.out.println("reset");
 	}
 	
 	public boolean changeSpeed(String[] args){
@@ -179,4 +181,7 @@ public class Sim extends Canvas implements Runnable{
 		return true;
 	}
 	
+	public void changeAlgorithm(int a){
+		simstate.setAlgorithm(a);
+	}
 }
