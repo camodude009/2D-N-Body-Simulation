@@ -23,7 +23,7 @@ public class Planet {
 		aY = 0;
 		for(Planet p : simstate.getPlanets()){
 			if(p != this){
-				double a = Sim.G*p.getM()/getDS(p);
+				double a = Sim.g*p.getM()/getDS(p);
 				aX += (getDX(p)/getD(p)*a);
 				aY += (getDY(p)/getD(p)*a);
 			}
@@ -47,7 +47,7 @@ public class Planet {
 		aY = 0;
 		for(Planet p : simstate.getPlanets()){
 			if(p != this){
-				double a = Sim.G*p.getM()/getDS(p);
+				double a = Sim.g*p.getM()/getDS(p);
 				aX += (getDX(p)/getD(p)*a);
 				aY += (getDY(p)/getD(p)*a);
 			}
@@ -110,7 +110,7 @@ public class Planet {
 		return r;
 	}
 	private void calculateRadius() {
-		r = Math.pow((Math.abs((4*m*Sim.G)/(3*Math.PI*p))), (1.0/3.0));
+		r = Math.pow((Math.abs((3.0*m*Sim.g)/(4.0*Math.PI*p))), (1.0/3.0));
 	}
 	private double getDX(Planet p){
 		return p.getX()-this.x;
@@ -128,12 +128,12 @@ public class Planet {
 		return 0.5*m*getVS();
 	}
 	private double getEPot(Planet p){
-		return Sim.G*m*p.getM()/getD(p);
+		return Sim.g*m*p.getM()/getD(p);
 	}
 	
-	public void render(Graphics g) { //draws a circle
+	public void render(Graphics g, int xOffset, int yOffset, double scale) { //draws a circle
 		g.setColor(Color.black);
-	    g.fillOval((int)(x-r),(int)(y-r),(int)(r*2),(int)(r*2));
+	    g.fillOval((int)((x*scale)-r)+xOffset,(int)((y*scale)-r)+yOffset,(int)(r*2),(int)(r*2));
 	}
 	
 }

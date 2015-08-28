@@ -48,10 +48,14 @@ public class Main {
 			save(args);
 		}else if(cmd[0].equals("reset")){ //reset
 			reset();
-		}else if(cmd[0].equals("speed")){ //reset
+		}else if(cmd[0].equals("speed")){ //speed
 			speed(args);
-		}else if(cmd[0].equals("algo")){ //reset
-			changeAlgorithm(args);
+		}else if(cmd[0].equals("algo")){ //algorithm
+			algorithm(args);
+		}else if(cmd[0].equals("grav")){ //gravitational constant
+			setG(args);
+		}else if(cmd[0].equals("scale")){ //scale
+			scale(args);
 		}else{
 			System.out.println(ERROR_INVALID_COMMAND);
 		}
@@ -121,10 +125,30 @@ public class Main {
 			System.out.println(ERROR_SIM_NOT_PAUSED);
 		}
 	}
-	public static void changeAlgorithm(String[] args){
+	public static void algorithm(String[] args){
 		try{
 			int a = Integer.parseInt(args[0]);
-			sim.changeAlgorithm(a);
+			sim.setAlgorithm(a);
+		}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
+			System.out.println(ERROR_INVALID_COMMAND);
+		}
+	}
+	public static void setG(String[] args){
+		try{
+			if(args[0].equals("G")){
+				sim.setG(Sim.G);
+			}else{
+				double g = Double.parseDouble(args[0]);
+				sim.setG(g);
+			}
+		}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
+			System.out.println(ERROR_INVALID_COMMAND);
+		}
+	}
+	public static void scale(String[] args){
+		try{
+			double s = Double.parseDouble(args[0]);
+			sim.setScale(s);
 		}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
 			System.out.println(ERROR_INVALID_COMMAND);
 		}

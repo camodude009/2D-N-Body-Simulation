@@ -5,28 +5,28 @@ import java.util.ArrayList;
 public class Simstate {
 
 	private ArrayList<Planet> thePlanets;
-	private ArrayList<int[][]> history;
+	private ArrayList<double[][]> history;
 	private static int algorithm = 0;
 	
 	public Simstate(){
 		thePlanets = new ArrayList<Planet>();
-		history = new ArrayList<int[][]>();
+		history = new ArrayList<double[][]>();
 	}
 	
-	public void render(Graphics g) {
+	public void render(Graphics g, int xOffset, int yOffset, double scale) {
 		//rendering planets
 		for(Planet p : thePlanets){
-			p.render(g);
+			p.render(g, xOffset, yOffset, scale);
 		}
 		//for every step
 		for(int i = 1; i < history.size()-1; i++){
-			int[][]t = history.get(i);
+			double[][]t = history.get(i);
 			//drawing lines between past positions of planets
 			for (int j = 0; j < t.length; j++){
-				g.drawLine(	history.get(i-1)[j][0],
-							history.get(i-1)[j][1],
-							history.get(i)[j][0],
-							history.get(i)[j][1]
+				g.drawLine(	(int)(history.get(i-1)[j][0]*scale)+xOffset,
+							(int)(history.get(i-1)[j][1]*scale)+yOffset,
+							(int)(history.get(i)[j][0]*scale)+xOffset,
+							(int)(history.get(i)[j][1]*scale)+yOffset
 						);
 			}
 		}
@@ -70,7 +70,7 @@ public class Simstate {
 	
 	public void addPlanet(double x, double y, double vX, double vY, double m, double p){
 		thePlanets.add(new Planet(x, y, vX, vY, m, p, this));
-		history = new ArrayList<int[][]>();
+		history = new ArrayList<double[][]>();
 	}
 	
 	public ArrayList<Planet> getPlanets() {
@@ -86,11 +86,11 @@ public class Simstate {
 		return r;
 	}
 	
-	public int[][] getPlanetPositions(){
-		int[][]r = new int[thePlanets.size()][2];
+	public double[][] getPlanetPositions(){
+		double[][]r = new double[thePlanets.size()][2];
 		for(int i = 0; i < thePlanets.size(); i++){
-			r[i][0] = (int) thePlanets.get(i).getX();
-			r[i][1] = (int) thePlanets.get(i).getY();
+			r[i][0] = thePlanets.get(i).getX();
+			r[i][1] = thePlanets.get(i).getY();
 		}
 		return r;
 	}

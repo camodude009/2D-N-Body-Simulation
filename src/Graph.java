@@ -87,7 +87,7 @@ public class Graph extends Canvas implements Runnable{
 	            deltaT--;
 	        }
 	        if (deltaF >= 1) {
-	        	if(!paused) render();
+	        	if(!paused || frame.isFocused()) render();
 	            frames++;
 	            deltaF--;
 	        }

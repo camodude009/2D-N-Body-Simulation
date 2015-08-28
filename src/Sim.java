@@ -21,11 +21,13 @@ public class Sim extends Canvas implements Runnable{
 	private int framesPerSecond = 0;
 	
 	public final static double G = 6.67408*Math.pow(10, -11);
+	public static double g = G;
 	private Simstate simstate;
 	private boolean paused = true;
 	private double ticksToDo = 0.0;
 	private double stepSize = 1.0;
 	private double stepsPerTick = 1.0;
+	private double scale = 1;
 	
 	public Sim(boolean d) {
 		debug = d;
@@ -89,7 +91,7 @@ public class Sim extends Canvas implements Runnable{
 	            deltaT--;
 	        }
 	        if (deltaF >= 1) {
-	        	if(!paused) render();
+	        	if(!paused || frame.isFocused()) render();
 	            frames++;
 	            deltaF--;
 	        }
@@ -115,6 +117,8 @@ public class Sim extends Canvas implements Runnable{
 	}
 	
 	private void render() {
+		//checking dimensions
+		dimensions = new Dimension(frame.getWidth(), frame.getHeight());
 		//getting buffer strategy
 		BufferStrategy strategy = this.getBufferStrategy(); 		
 	    if(strategy == null){
@@ -128,7 +132,7 @@ public class Sim extends Canvas implements Runnable{
 	    g.setColor(Color.white);
 	    g.fillRect(0,0,dimensions.width,dimensions.height); //filling background white
 	    //rendering simstate
-	    simstate.render(g);
+	    simstate.render(g, dimensions.width/2, dimensions.height/2, dimensions.width/scale);
 	    //rendering debug fps/tps
     	g.setColor(Color.black);
     	g.drawString("Tps: " + ticksPerSecond + " Fps: " + framesPerSecond, 20, 20);
@@ -179,7 +183,18 @@ public class Sim extends Canvas implements Runnable{
 		return true;
 	}
 	
-	public void changeAlgorithm(int a){
+	public void setAlgorithm(int a){
 		simstate.setAlgorithm(a);
+	}
+	
+	public void setG(double g){
+		this.g = g;
+		System.out.println("g set to: " + g);
+	}
+	
+	public void setScale(double s){
+		scale = s;
+		System.out.println("scale set to: " + scale);
+		render();
 	}
 }
