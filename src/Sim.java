@@ -3,7 +3,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
-import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
@@ -11,15 +10,15 @@ import javax.swing.JFrame;
 public class Sim extends Canvas implements Runnable{
 	
 	public JFrame frame;
-	private final static Dimension DIMENSIONS = new Dimension(1200, 900);
-	private final String NAME = "2D-N-Body-Simulation";
-	private final double TPS = 60.0;
-	private final double FPS = 60.0;
+	private Dimension dimensions = new Dimension(1200, 900);
+	private String name = "2D-N-Body-Simulation";
+	private double tps = 60.0;
+	private double fps = 60.0;
 	private boolean debug = false;
 	private boolean running = false;
 	private Thread thread;
-	private int tps = 0;
-	private int fps = 0;
+	private int ticksPerSecond = 0;
+	private int framesPerSecond = 0;
 	
 	public final static double G = 6.67408*Math.pow(10, -11);
 	private Simstate simstate;
@@ -36,12 +35,12 @@ public class Sim extends Canvas implements Runnable{
 	
 	public void init(){
 	    //creating the window
-		setPreferredSize(DIMENSIONS);
-	    setMinimumSize(DIMENSIONS);
-	    setMaximumSize(DIMENSIONS);
-	    setSize(DIMENSIONS);
-	    frame = new JFrame(NAME);
-	    frame.setResizable(false);
+		setPreferredSize(dimensions);
+	    setMinimumSize(dimensions);
+	    setMaximumSize(dimensions);
+	    setSize(dimensions);
+	    frame = new JFrame(name);
+	    frame.setResizable(true);
 	    frame.add(this); 
 	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    frame.pack();
@@ -71,8 +70,8 @@ public class Sim extends Canvas implements Runnable{
 	
 	public void run() {
 		long initialTime = System.nanoTime();
-		final double timeT = 1000000000 / TPS;
-		final double timeF = 1000000000 / FPS;
+		final double timeT = 1000000000 / tps;
+		final double timeF = 1000000000 / fps;
 		double deltaT = 0;
 		double deltaF = 0;
 		int frames = 0;
@@ -96,10 +95,10 @@ public class Sim extends Canvas implements Runnable{
 	        }
 	        if (System.currentTimeMillis() - timer > 1000) {
 	            if (debug) {
-	                System.out.println("TPS: " + ticks + " FPS: " + frames);
+	                System.out.println("tps: " + ticks + " fps: " + frames);
 	            }
-	            tps = ticks;
-	            fps = frames;
+	            ticksPerSecond = ticks;
+	            framesPerSecond = frames;
 	            ticks = 0;
 	            frames = 0;
 	            timer += 1000;
@@ -125,15 +124,14 @@ public class Sim extends Canvas implements Runnable{
 	    Graphics g = strategy.getDrawGraphics(); //getting the graphics object
 	    
 	    //drawcalls	
-	    
 	    //background
 	    g.setColor(Color.white);
-	    g.fillRect(0,0,DIMENSIONS.width,DIMENSIONS.height); //filling background white
+	    g.fillRect(0,0,dimensions.width,dimensions.height); //filling background white
 	    //rendering simstate
 	    simstate.render(g);
 	    //rendering debug fps/tps
     	g.setColor(Color.black);
-    	g.drawString("Tps: " + tps + " Fps: " + fps, 20, 20);
+    	g.drawString("Tps: " + ticksPerSecond + " Fps: " + framesPerSecond, 20, 20);
 	    
 	    //disposing of the graphics object and sending image to video card   
 	    g.dispose();
@@ -173,7 +171,7 @@ public class Sim extends Canvas implements Runnable{
 		}
 		ticksToDo = 0;
 		stepSize = speed/stepsPerSecond;
-		stepsPerTick = stepsPerSecond/TPS;
+		stepsPerTick = stepsPerSecond/tps;
 		
 		System.out.println("stepsize: " + stepSize);
 		System.out.println("steps per tick: " + stepsPerTick);

@@ -30,21 +30,29 @@ public class Simstate {
 						);
 			}
 		}
+		switch (algorithm){
+			case 0:
+				g.drawString("Euler", 20, 40);
+				break;
+			case 1:
+				g.drawString("Verlet", 20, 40);
+				break;
+		}
 	}
 	
 	public void tick(double t) { //updates planets
-		switch (algorithm){
-		case 0:
-			tickEuler(t);
-			break;
-		case 1:
-			tickVerlet(t);
-			break;
-		default:
-			tickEuler(t);
-			break;
-		}
 		history.add(getPlanetPositions());
+		switch (algorithm){
+			case 0:
+				tickEuler(t);
+				break;
+			case 1:
+				tickVerlet(t);
+				break;
+			default:
+				tickEuler(t);
+				break;
+		}
 	}
 	
 	public void tickEuler(double t){
