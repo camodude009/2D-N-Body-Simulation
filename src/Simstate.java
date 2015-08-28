@@ -20,10 +20,30 @@ public class Simstate {
 	
 	public void tick() { //updates planets "stepsPerTick" times
 		for(int i = 0; i < stepsPerTick; i++){
-			for(Planet p : thePlanets){
-				p.tick(simMode, 1.0/(double)stepsPerTick);
+			switch (simMode){
+			case 0:
+				tickEuler(1.0/(double)stepsPerTick);
+				break;
+			case 1:
+				tickEuler(1.0/(double)stepsPerTick);
+				break;
+			case 2:
+				break;
 			}
 		}
+	}
+	
+	public void tickEuler(double t){
+		for(Planet p: thePlanets) p.updateAccelerationEuler();		
+		for(Planet p: thePlanets) p.updateVelocityEuler(t);		
+		for(Planet p: thePlanets) p.updatePositionEuler(t);
+	}
+	
+	public void tickVerlet(double t){
+		for(Planet p: thePlanets) p.updateAccelerationVerlet();
+		for(Planet p: thePlanets) p.updatePositionVerlet(t);
+		for(Planet p: thePlanets) p.updateAccelerationVerlet();
+		for(Planet p: thePlanets) p.updateVelocityVerlet(t);
 	}
 	
 	public void addPlanet(double x, double y, double vX, double vY, double m, double p){

@@ -18,32 +18,6 @@ public class Planet {
 		calculateRadius();
 	}
 	
-	public void tick(int simMode, double t){
-		switch (simMode){
-			case 0:
-				tickEuler(t);
-				break;
-			case 1:
-				tickVerlet(t);
-				break;
-			case 2:
-				break;
-		}
-	}
-	
-	public void tickEuler(double t){
-		updateAccelerationEuler();		
-		updateVelocityEuler(t);		
-		updatePositionEuler(t);
-	}
-	
-	public void tickVerlet(double t){
-		updateAccelerationVerlet();
-		updatePositionVerlet(t);
-		updateAccelerationVerlet();
-		updateVelocityVerlet(t);
-	}
-	
 	public void updateAccelerationEuler(){
 		aX = 0;
 		aY = 0;
