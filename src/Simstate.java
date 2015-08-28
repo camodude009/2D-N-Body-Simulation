@@ -32,13 +32,13 @@ public class Simstate {
 		}
 	}
 	
-	public void tick(double stepSize) { //updates planets
+	public void tick(double t) { //updates planets
 		switch (simMode){
 		case 0:
-			tickEuler(stepSize);
+			tickEuler(t);
 			break;
 		case 1:
-			tickEuler(stepSize);
+			tickVerlet(t);
 			break;
 		case 2:
 			break;

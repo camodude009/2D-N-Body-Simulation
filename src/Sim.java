@@ -13,14 +13,20 @@ public class Sim extends Canvas implements Runnable{
 	public JFrame frame;
 	private final static Dimension DIMENSIONS = new Dimension(1200, 900);
 	private final String NAME = "2D-N-Body-Simulation";
+	private final double TPS = 60.0;
+	private final double FPS = 60.0;
 	private boolean debug = false;
 	private boolean running = false;
 	private Thread thread;
-	private int fps = 0, tps = 0;
+	private int tps = 0;
+	private int fps = 0;
 	
 	public final static double G = 6.67408*Math.pow(10, -11);
 	private Simstate simstate;
 	private boolean paused = true;
+	private double ticksToDo = 0.0;
+	private double stepSize = 1.0;
+	private double stepsPerTick = 1.0;
 	
 	public Sim(boolean d) {
 		debug = d;
@@ -43,7 +49,7 @@ public class Sim extends Canvas implements Runnable{
 	    frame.setVisible(true);
 	}
 	
-	public void start(){	    
+	public void start(){
 	    running = true;
 	    thread = new Thread(this);
 	    thread.start();
@@ -64,52 +70,49 @@ public class Sim extends Canvas implements Runnable{
 	}
 	
 	public void run() {
-		long lastTime = System.nanoTime();
-	    double nsPerTick = 1000000000.0 / 60.0;
-	    
-	    int ticks = 0;
-	    int frames = 0;
-	    
-	    long lastTick = System.currentTimeMillis();
-	    double unprocessed = 0;
-	    
+		long initialTime = System.nanoTime();
+		final double timeT = 1000000000 / TPS;
+		final double timeF = 1000000000 / FPS;
+		double deltaT = 0;
+		double deltaF = 0;
+		int frames = 0;
+		int ticks = 0;
+		long timer = System.currentTimeMillis();
+		
 	    while (running) {
-		    long now = System.nanoTime();
-		    unprocessed += (now - lastTime) / nsPerTick;
-		    lastTime = now;
-		    boolean shouldRender = true;
-		    //update queue
-		    while (unprocessed >= 1) {
-			    ticks++;
-			    if(!paused) tick();
-			    unprocessed --;
-			    shouldRender = true;
-		    }
-		    //break between update & render
-		    try {
-		    	Thread.sleep(1);
-		    } catch (InterruptedException e) {
-		    	e.printStackTrace();
-		    }
-		    //render
-		    if (shouldRender) {
-		    	frames++;
-		    	if(!paused) render();
-		    }
-		    //fps timer
-		    if (System.currentTimeMillis() - lastTick >= 1000) {
-			    if(debug) System.out.println(ticks + " ticks, " + frames + " frames");
-			    fps = frames;
-			    tps = ticks;
-			    frames = 0;
-			    ticks = 0;
-			    lastTick += 1000;
-		    }
+	        long currentTime = System.nanoTime();
+	        deltaT += (currentTime - initialTime) / timeT;
+	        deltaF += (currentTime - initialTime) / timeF;
+	        initialTime = currentTime;
+	        if (deltaT >= 1) {
+	            if(!paused) tick();
+	            ticks++;
+	            deltaT--;
+	        }
+	        if (deltaF >= 1) {
+	        	if(!paused) render();
+	            frames++;
+	            deltaF--;
+	        }
+	        if (System.currentTimeMillis() - timer > 1000) {
+	            if (debug) {
+	                System.out.println("TPS: " + ticks + " FPS: " + frames);
+	            }
+	            tps = ticks;
+	            fps = frames;
+	            ticks = 0;
+	            frames = 0;
+	            timer += 1000;
+	        }
 	    }
 	}
 	
 	private void tick() {
-		simstate.tick(1.0);
+		ticksToDo += stepsPerTick;
+		while(ticksToDo >= 1){
+			simstate.tick(stepSize);
+			ticksToDo--;
+		}
 	}
 	
 	private void render() {
@@ -129,10 +132,8 @@ public class Sim extends Canvas implements Runnable{
 	    //rendering simstate
 	    simstate.render(g);
 	    //rendering debug fps/tps
-	    if(debug){
-	    	g.setColor(Color.black);
-	    	g.drawString("Tps: " + tps + " Fps: " + fps, 20, 20);
-	    }
+    	g.setColor(Color.black);
+    	g.drawString("Tps: " + tps + " Fps: " + fps, 20, 20);
 	    
 	    //disposing of the graphics object and sending image to video card   
 	    g.dispose();
@@ -157,6 +158,25 @@ public class Sim extends Canvas implements Runnable{
 	
 	public void reset(){
 		simstate = new Simstate();
+	}
+	
+	public boolean changeSpeed(String[] args){
+		double speed;
+		double stepsPerSecond;
+		try{
+			speed = Double.parseDouble(args[0]);
+			stepsPerSecond = Double.parseDouble(args[1]);
+		}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
+			return false;
+		}
+		ticksToDo = 0;
+		stepSize = speed/stepsPerSecond;
+		stepsPerTick = stepsPerSecond/TPS;
+		
+		System.out.println("stepsize: " + stepSize);
+		System.out.println("steps per tick: " + stepsPerTick);
+		
+		return true;
 	}
 	
 }

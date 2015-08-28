@@ -48,6 +48,8 @@ public class Main {
 			save(args);
 		}else if(cmd[0].equals("reset")){ //reset
 			reset();
+		}else if(cmd[0].equals("speed")){ //reset
+			speed(args);
 		}else{
 			System.out.println(ERROR_INVALID_COMMAND);
 		}
@@ -104,6 +106,18 @@ public class Main {
 	}
 	public static void reset(){
 		sim.reset();
+	}
+	public static void speed(String[] args){
+		if(sim.getPaused()){
+			if(sim.changeSpeed(args)){
+				System.out.println("changed speed");
+			}
+			else{
+				System.out.println(ERROR_INVALID_COMMAND);
+			}
+		}else{
+			System.out.println(ERROR_SIM_NOT_PAUSED);
+		}
 	}
 	
 }
