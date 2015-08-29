@@ -4,7 +4,6 @@
 public class Main {
 	
 	private static Sim sim;
-	private static Graph graph;
 	
 	//error strings
 	private static final String ERROR_INVALID_COMMAND = "invalid command";
@@ -22,9 +21,6 @@ public class Main {
 		
 	    sim = new Sim(debug);
 	    sim.start();
-	    
-	    graph = new Graph(debug);
-	    graph.start();
 	    
 	    while(true){
 	    	commands(UI.readLine());

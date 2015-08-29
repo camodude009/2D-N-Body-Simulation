@@ -88,10 +88,10 @@ public class Planet {
 	public void setvY(double vY) {
 		this.vY = vY;
 	}
-	private double getVS(){
+	public double getVS(){
 		return (vX*vX)+(vY*vY);
 	}
-	private double getV(){
+	public double getV(){
 		return Math.sqrt(getVS());
 	}
 	public double getM() {
@@ -109,26 +109,32 @@ public class Planet {
 	public double getR() {
 		return r;
 	}
-	private void calculateRadius() {
+	public void calculateRadius() {
 		r = Math.pow((Math.abs((3.0*m*Sim.g)/(4.0*Math.PI*p))), (1.0/3.0));
 	}
-	private double getDX(Planet p){
+	public double getDX(Planet p){
 		return p.getX()-this.x;
 	}
-	private double getDY(Planet p){
+	public double getDY(Planet p){
 		return p.getY()-this.y;
 	}
-	private double getDS(Planet p){
+	public double getDS(Planet p){
 		return (getDX(p)*getDX(p) + getDY(p)*getDY(p));
 	}
-	private double getD(Planet p){
+	public double getD(Planet p){
 		return Math.sqrt(getDS(p));
 	}
-	private double getEKin(){
+	public double getEKin(){
 		return 0.5*m*getVS();
 	}
-	private double getEPot(Planet p){
+	public double getEPot(Planet p){
 		return Sim.g*m*p.getM()/getD(p);
+	}
+	public double getMomentumX(){
+		return m*vX;
+	}
+	public double getMomentumY(){
+		return m*vY;
 	}
 	
 	public void render(Graphics g, int xOffset, int yOffset, double scale) { //draws a circle
