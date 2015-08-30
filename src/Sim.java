@@ -172,6 +172,7 @@ public class Sim extends Canvas implements Runnable{
 			return false;
 		}
 		calculateTimings();
+		System.out.println("speed: " + speed);
 		return true;
 	}
 	
@@ -183,6 +184,7 @@ public class Sim extends Canvas implements Runnable{
 			return false;
 		}
 		calculateTimings();
+		System.out.println("stepsize: " + stepSize);
 		return true;
 	}
 	
@@ -190,10 +192,6 @@ public class Sim extends Canvas implements Runnable{
 		ticksToDo = 0;
 		double stepsPerSecond = speed/stepSize;		
 		stepsPerTick = stepsPerSecond/tps;
-		
-		System.out.println("speed: " + speed);
-		System.out.println("steps per second: " + stepsPerSecond);
-		System.out.println("stepsize: " + stepSize);
 	}
 	
 	public void setAlgorithm(int a){
