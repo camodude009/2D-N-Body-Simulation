@@ -25,6 +25,7 @@ public class Sim extends Canvas implements Runnable{
 	private Simstate simstate;
 	private boolean paused = true;
 	private double ticksToDo = 0.0;
+	private double speed = 60.0;
 	private double stepSize = 1.0;
 	private double stepsPerTick = 1.0;
 	private double scale = 1;
@@ -165,22 +166,34 @@ public class Sim extends Canvas implements Runnable{
 	}
 	
 	public boolean changeSpeed(String[] args){
-		double speed;
-		double stepsPerSecond;
 		try{
 			speed = Double.parseDouble(args[0]);
-			stepsPerSecond = Double.parseDouble(args[1]);
 		}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
 			return false;
 		}
+		calculateTimings();
+		return true;
+	}
+	
+	public boolean changeStepSize(String[] args){
+		double speed;
+		try{
+			stepSize = Double.parseDouble(args[0]);
+		}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
+			return false;
+		}
+		calculateTimings();
+		return true;
+	}
+	
+	public void calculateTimings(){
 		ticksToDo = 0;
-		stepSize = speed/stepsPerSecond;
+		double stepsPerSecond = speed/stepSize;		
 		stepsPerTick = stepsPerSecond/tps;
 		
+		System.out.println("speed: " + speed);
+		System.out.println("steps per second: " + stepsPerSecond);
 		System.out.println("stepsize: " + stepSize);
-		System.out.println("steps per tick: " + stepsPerTick);
-		
-		return true;
 	}
 	
 	public void setAlgorithm(int a){

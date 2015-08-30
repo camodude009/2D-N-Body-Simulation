@@ -45,7 +45,9 @@ public class Main {
 		}else if(cmd[0].equals("reset")){ //reset
 			reset();
 		}else if(cmd[0].equals("speed")){ //speed
-			speed(args);
+			setSpeed(args);
+		}else if(cmd[0].equals("stepsize")){ //speed
+			setStepSize(args);
 		}else if(cmd[0].equals("algo")){ //algorithm
 			algorithm(args);
 		}else if(cmd[0].equals("grav")){ //gravitational constant
@@ -109,14 +111,16 @@ public class Main {
 	public static void reset(){
 		sim.reset();
 	}
-	public static void speed(String[] args){
+	public static void setSpeed(String[] args){
 		if(sim.getPaused()){
-			if(sim.changeSpeed(args)){
-				System.out.println("changed speed");
-			}
-			else{
-				System.out.println(ERROR_INVALID_COMMAND);
-			}
+			if(!sim.changeSpeed(args)) System.out.println(ERROR_INVALID_COMMAND);
+		}else{
+			System.out.println(ERROR_SIM_NOT_PAUSED);
+		}
+	}
+	public static void setStepSize(String[] args){
+		if(sim.getPaused()){
+			if(!sim.changeStepSize(args)) System.out.println(ERROR_INVALID_COMMAND);
 		}else{
 			System.out.println(ERROR_SIM_NOT_PAUSED);
 		}
