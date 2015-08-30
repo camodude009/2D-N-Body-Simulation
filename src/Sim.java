@@ -142,11 +142,12 @@ public class Sim extends Canvas implements Runnable{
 	}
 	
 	private void tick() {
-		System.out.println("tick");
-		totalElapsedTime += secondsPerTick;
-		if((int)(100*(totalElapsedTime/targetTime)) != completion){
-			completion = (int)(100*(totalElapsedTime/targetTime));
-			System.out.println(completion);
+		if(targetTime != 0.0){
+			totalElapsedTime += secondsPerTick;
+			if((int)(100*(totalElapsedTime/targetTime)) != completion){
+				completion = (int)(100*(totalElapsedTime/targetTime));
+				System.out.println(completion);
+			}
 		}
 		if(realTime){
 			stepsToDo += stepsPerTick;
