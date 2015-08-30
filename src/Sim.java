@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
@@ -24,14 +25,26 @@ public class Sim extends Canvas implements Runnable{
 	public static double g = G;
 	private Simstate simstate;
 	private boolean paused = true;
-	private double ticksToDo = 0.0;
+	private double stepsToDo = 0.0;
 	private double speed = 60.0;
 	private double stepSize = 1.0;
 	private double stepsPerTick = 1.0;
+	private double secondsPerTick = 1.0;
 	private double scale = 1;
+	private boolean realTime = true;
+	private double totalElapsedTime = 0.0;
+	private double targetTime = 0.0;
+	private int completion = 0;
+	private ArrayList<Double> momentum;
+	private ArrayList<Double> eKin;
+	private ArrayList<Double> ePot;
+	private ArrayList<Double> energy;
+	private ArrayList<Double> time;
+	private boolean collectData = false;
 	
-	public Sim(boolean d) {
+	public Sim(boolean d, boolean rt) {
 		debug = d;
+		realTime = rt;
 		init();
 		simstate = new Simstate();
 	}
@@ -48,7 +61,7 @@ public class Sim extends Canvas implements Runnable{
 	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    frame.pack();
 	    frame.setLocationRelativeTo(null);
-	    frame.setVisible(true);
+	    frame.setVisible(realTime);
 	}
 	
 	public void start(){
@@ -82,42 +95,78 @@ public class Sim extends Canvas implements Runnable{
 		long timer = System.currentTimeMillis();
 		
 	    while (running) {
-	        long currentTime = System.nanoTime();
-	        deltaT += (currentTime - initialTime) / timeT;
-	        deltaF += (currentTime - initialTime) / timeF;
-	        initialTime = currentTime;
-	        if (deltaT >= 1) {
-	            if(!paused) tick();
-	            ticks++;
-	            deltaT--;
-	        }
-	        if (deltaF >= 1) {
-	        	if(!paused || frame.isFocused()) render();
-	            frames++;
-	            deltaF--;
-	        }
-	        if (System.currentTimeMillis() - timer > 1000) {
-	            if (debug) {
-	                System.out.println("tps: " + ticks + " fps: " + frames);
-	            }
-	            ticksPerSecond = ticks;
-	            framesPerSecond = frames;
-	            ticks = 0;
-	            frames = 0;
-	            timer += 1000;
-	        }
+	        if(realTime){
+	        	if(totalElapsedTime < targetTime || targetTime == 0.0){
+	        		long currentTime = System.nanoTime();
+			        deltaT += (currentTime - initialTime) / timeT;
+			        deltaF += (currentTime - initialTime) / timeF;
+			        initialTime = currentTime;
+			        if (deltaT >= 1) {
+			            if(!paused) tick();
+			            ticks++;
+			            deltaT--;
+			        }
+			        if (deltaF >= 1) {
+			        	if(!paused || frame.isFocused()) render();
+			            frames++;
+			            deltaF--;
+			        }
+			        if (System.currentTimeMillis() - timer > 1000) {
+			            if (debug) {
+			                System.out.println("tps: " + ticks + " fps: " + frames);
+			            }
+			            ticksPerSecond = ticks;
+			            framesPerSecond = frames;
+			            ticks = 0;
+			            frames = 0;
+			            timer += 1000;
+			        }
+	        	}else{
+	        		if(!paused){
+			    		pause();
+			    		System.out.println("finished");
+		    		}
+	        	}
+		    }else{
+		    	if(!paused){
+		    		if(totalElapsedTime < targetTime || targetTime == 0.0){
+		    			tick();
+		    		}else{
+			    		System.out.println("finished");
+		    			pause();
+		    			System.out.println("paused");
+		    		}
+		    	}
+		    }
 	    }
 	}
 	
 	private void tick() {
-		ticksToDo += stepsPerTick;
-		while(ticksToDo >= 1){
-			simstate.tick(stepSize);
-			ticksToDo--;
+		System.out.println("tick");
+		totalElapsedTime += secondsPerTick;
+		if((int)(100*(totalElapsedTime/targetTime)) != completion){
+			completion = (int)(100*(totalElapsedTime/targetTime));
+			System.out.println(completion);
+		}
+		if(realTime){
+			stepsToDo += stepsPerTick;
+			while(stepsToDo >= 1){
+				step();
+				stepsToDo--;
+			}
+		}else{
+			step();
+		}
+		if(collectData){
+			collectData();
 		}
 	}
 	
-	private void render() {
+	private void step(){
+		simstate.tick(stepSize);
+	}
+	
+	public void render() {
 		//checking dimensions
 		dimensions = new Dimension(frame.getWidth(), frame.getHeight());
 		//getting buffer strategy
@@ -153,7 +202,6 @@ public class Sim extends Canvas implements Runnable{
 	
 	public void addPlanet(double x, double y, double vX, double vY, double m, double p){
 		simstate.addPlanet(x, y, vX, vY, m, p);
-		render();
 	}
 	public String[] getPlanetsAsText(){
 		return simstate.getPlanetsAsText();
@@ -161,8 +209,19 @@ public class Sim extends Canvas implements Runnable{
 	
 	public void reset(){
 		simstate = new Simstate();
+		g = G;
+		paused = true;
+		stepsToDo = 0.0;
+		speed = 60.0;
+		stepSize = 1.0;
+		stepsPerTick = 1.0;
+		secondsPerTick = 1.0;
+		scale = 1;
+		totalElapsedTime = 0.0;
+		targetTime = 0.0;
+		resetData();
 		render();
-		System.out.println("reset");
+		System.out.println("sim reset");
 	}
 	
 	public boolean changeSpeed(String[] args){
@@ -177,7 +236,6 @@ public class Sim extends Canvas implements Runnable{
 	}
 	
 	public boolean changeStepSize(String[] args){
-		double speed;
 		try{
 			stepSize = Double.parseDouble(args[0]);
 		}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
@@ -189,9 +247,11 @@ public class Sim extends Canvas implements Runnable{
 	}
 	
 	public void calculateTimings(){
-		ticksToDo = 0;
+		stepsToDo = 0;
+		secondsPerTick = speed/tps;
 		double stepsPerSecond = speed/stepSize;		
 		stepsPerTick = stepsPerSecond/tps;
+
 	}
 	
 	public void setAlgorithm(int a){
@@ -199,7 +259,7 @@ public class Sim extends Canvas implements Runnable{
 	}
 	
 	public void setG(double g){
-		this.g = g;
+		Sim.g = g;
 		System.out.println("g set to: " + g);
 	}
 	
@@ -207,5 +267,87 @@ public class Sim extends Canvas implements Runnable{
 		scale = s;
 		System.out.println("scale set to: " + scale);
 		render();
+	}
+	
+	public void setRealTime(boolean rt){
+		if(rt == realTime){
+			System.out.println("mode already set");
+		}else{
+			realTime = rt;
+			if(realTime){
+				setVisible(true);
+				render();
+			}else{
+				setVisible(false);
+			}
+		}
+	}
+	
+	public void setTargetTime(double t){
+		targetTime = t;
+		System.out.println("target time: " + targetTime);
+	}
+	
+	public void collectData(){
+		double momentumX = 0;
+		double momentumY = 0;
+		double momentum = 0;
+		double eKin = 0;
+		double ePot = 0;
+		double energy;
+		for(Planet p: simstate.getPlanets()){
+			momentumX += p.getMomentumX();
+			momentumY += p.getMomentumY();
+			eKin += p.getEKin();
+		}
+		for(int i = 0; i < simstate.getPlanets().size()-1; i++){
+			Planet a = simstate.getPlanets().get(i);
+			for (int j = i+1; j < simstate.getPlanets().size(); j++){
+				Planet b = simstate.getPlanets().get(i);
+				ePot += a.getEPot(b);
+			}
+		}
+		energy = eKin + ePot;
+		momentum = Math.sqrt(momentumX*momentumX+momentumY*momentumY);
+		this.time.add(totalElapsedTime);
+		this.momentum.add(momentum);
+		this.eKin.add(eKin);
+		this.ePot.add(ePot);
+		this.energy.add(energy);
+	}
+	
+	public void setCollectData(boolean c){
+		if(!collectData && c){
+			resetData();
+			System.out.println("started collecting data");
+		}else if(collectData && !c){
+			System.out.println("stopped collecting data");
+		}else if(collectData && c){
+			System.out.println("already collecting data");
+		}else{
+			System.out.println("still not collecting data");
+		}
+		collectData = c;
+	}
+	
+	public void resetData(){
+		time = new ArrayList<Double>();
+		momentum = new ArrayList<Double>();
+		eKin = new ArrayList<Double>();
+		ePot = new ArrayList<Double>();
+		energy = new ArrayList<Double>();
+		System.out.println("data reset");
+	}
+	
+	public void saveData(String fileName){
+		if(momentum.size() > 0){
+			String[] s = new String[momentum.size()];
+			for(int i = 0; i < momentum.size(); i++){
+				s[i] = time.get(i) + " " + momentum.get(i) + " " + eKin.get(i) + " " + ePot.get(i) + " " + energy.get(i);
+			}
+			FileWriter.writeFile(fileName, s);
+		}else{
+			System.out.println("no data to save");
+		}
 	}
 }

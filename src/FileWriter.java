@@ -20,10 +20,11 @@ public class FileWriter {
 			PrintWriter writer = new PrintWriter(out);
 			//writing the file
 			for(String s: lines){
-				System.out.println(s);
+				//System.out.println(s);
 				writer.println(s);
 			}
 			writer.close();
+			System.out.println("success");
 		} catch (IOException e) {
 			System.out.println("error writing file");
 		}

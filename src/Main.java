@@ -19,7 +19,7 @@ public class Main {
 			}
 		}
 		
-	    sim = new Sim(debug);
+	    sim = new Sim(debug, false);
 	    sim.start();
 	    
 	    while(true){
@@ -54,6 +54,16 @@ public class Main {
 			setG(args);
 		}else if(cmd[0].equals("scale")){ //scale
 			scale(args);
+		}else if(cmd[0].equals("realtime")){ //realtime screen output
+			setRealTime(args);
+		}else if(cmd[0].equals("targettime")){ //realtime screen output
+			setTargetTime(args);
+		}else if(cmd[0].equals("data")){ //collect data (momentum, eKin, ePot, energy)
+			setCollectData(args);
+		}else if(cmd[0].equals("savedata")){ //save data
+			saveData(args);
+		}else if(cmd[0].equals("resetdata")){ //save data
+			resetData();
 		}else{
 			System.out.println(ERROR_INVALID_COMMAND);
 		}
@@ -94,7 +104,10 @@ public class Main {
 	public static void load(String[] args){
 		if(sim.getPaused()){
 			reset();
-			if(args.length == 1) commands(FileReader.readFile(args[0]));
+			if(args.length == 1){
+				commands(FileReader.readFile(args[0]));
+				sim.render();
+			}
 			else System.out.println(ERROR_INVALID_COMMAND);
 		}else{
 			System.out.println(ERROR_SIM_NOT_PAUSED);
@@ -126,23 +139,31 @@ public class Main {
 		}
 	}
 	public static void algorithm(String[] args){
-		try{
-			int a = Integer.parseInt(args[0]);
-			sim.setAlgorithm(a);
-		}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
-			System.out.println(ERROR_INVALID_COMMAND);
+		if(sim.getPaused()){
+			try{
+				int a = Integer.parseInt(args[0]);
+				sim.setAlgorithm(a);
+			}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
+				System.out.println(ERROR_INVALID_COMMAND);
+			}
+		}else{
+			System.out.println(ERROR_SIM_NOT_PAUSED);
 		}
 	}
 	public static void setG(String[] args){
-		try{
-			if(args[0].equals("G")){
-				sim.setG(Sim.G);
-			}else{
-				double g = Double.parseDouble(args[0]);
-				sim.setG(g);
+		if(sim.getPaused()){
+			try{
+				if(args[0].equals("G")){
+					sim.setG(Sim.G);
+				}else{
+					double g = Double.parseDouble(args[0]);
+					sim.setG(g);
+				}
+			}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
+				System.out.println(ERROR_INVALID_COMMAND);
 			}
-		}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
-			System.out.println(ERROR_INVALID_COMMAND);
+		}else{
+			System.out.println(ERROR_SIM_NOT_PAUSED);
 		}
 	}
 	public static void scale(String[] args){
@@ -150,6 +171,60 @@ public class Main {
 			double s = Double.parseDouble(args[0]);
 			sim.setScale(s);
 		}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
+			System.out.println(ERROR_INVALID_COMMAND);
+		}
+	}
+	public static void setRealTime(String[] args){
+		if(sim.getPaused()){
+			try{
+				int i = Integer.parseInt(args[0]);
+				if(i == 0) sim.setRealTime(false);
+				else if(i == 1) sim.setRealTime(true);
+				else System.out.println(ERROR_INVALID_COMMAND);
+			}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
+				System.out.println(ERROR_INVALID_COMMAND);
+			}
+		}else{
+			System.out.println(ERROR_SIM_NOT_PAUSED);
+		}
+	}
+	public static void setTargetTime(String[] args){
+		if(sim.getPaused()){
+			try{
+				double t = Double.parseDouble(args[0]);
+				sim.setTargetTime(t);
+			}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
+				System.out.println(ERROR_INVALID_COMMAND);
+			}
+		}else{
+			System.out.println(ERROR_SIM_NOT_PAUSED);
+		}
+	}
+	public static void setCollectData(String[] args){
+		if(sim.getPaused()){
+			try{
+				int i = Integer.parseInt(args[0]);
+				if(i == 0) sim.setCollectData(false);
+				else if(i == 1) sim.setCollectData(true);
+				else System.out.println(ERROR_INVALID_COMMAND);
+			}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
+				System.out.println(ERROR_INVALID_COMMAND);
+			}
+		}else{
+			System.out.println(ERROR_SIM_NOT_PAUSED);
+		}
+	}
+	public static void resetData(){
+		sim.resetData();
+	}
+	public static void saveData(String[] args){
+		if(args.length == 1){
+			if(sim.getPaused()){
+				sim.saveData(args[0]);
+			}else{
+				System.out.println(ERROR_SIM_NOT_PAUSED);
+			}
+		}else{
 			System.out.println(ERROR_INVALID_COMMAND);
 		}
 	}

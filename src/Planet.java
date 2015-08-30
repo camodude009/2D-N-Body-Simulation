@@ -4,7 +4,7 @@ import java.awt.Graphics;
 
 public class Planet {
 
-	private double x,y,vX,vY,aX,aY,aXOld,aYOld,m,p,r,f; //x,y coordinates, speed, mass, density, radius
+	private double x,y,vX,vY,aX,aY,aXOld,aYOld,m,p,r; //x,y coordinates, speed, mass, density, radius
 	private Simstate simstate;
 	
 	public Planet(double x, double y, double vX, double vY, double m, double p, Simstate simstate){
