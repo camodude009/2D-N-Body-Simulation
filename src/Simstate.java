@@ -1,5 +1,7 @@
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 
@@ -15,8 +17,9 @@ public class Simstate {
 		history = new ArrayList<double[][]>();
 	}
 	
-	public void render(Graphics g, int xOffset, int yOffset, double scale) {
+	public void render(Graphics2D g2d, int xOffset, int yOffset, double scale) {
 		//for every step
+		g2d.setStroke(new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND)); //setting stroke of lines
 		for(int i = 1; i < history.size()-1; i++){
 			double[][]t = history.get(i);
 			double[][]tOld = history.get(i-1);
@@ -24,7 +27,7 @@ public class Simstate {
 			for (int j = 0; j < t.length; j++){
 				//mixing colors for paths
 				Color p = thePlanets.get(j).getColor(); //planet color
-				Color b = new Color(80,80,153); //grey-blue color
+				Color b = Sim.bgColor; //bg color
 				//gradient function: -(2x)^2+1 -> gradient from c1 to c2 where c1 is full at 0 and c2 is full at 1/2 the length of the array of points
 				double mix = -1.0*(Math.pow(2.0*(double)(history.size()-i)/(double)history.size(), 2))+1.0; 
 				if(mix < 0) mix = 0; 
@@ -37,13 +40,13 @@ public class Simstate {
 				double g2 = b.getGreen();
 				double b2 = b.getBlue();
 				//mixing the two based on the the gradient from earlier
-				double rf = r1*mix + r2*mix2;
-				double gf = g1*mix + g2*mix2;
-				double bf = b1*mix + b2*mix2;
+				double rf = Math.sqrt(r1*r1*mix + r2*r2*mix2);
+				double gf = Math.sqrt(g1*g1*mix + g2*g2*mix2);
+				double bf = Math.sqrt(b1*b1*mix + b2*b2*mix2);
 				Color fc = new Color((int)rf, (int)gf, (int)bf);
 				//setting the color and drawing lines from point to point
-				g.setColor(fc);				
-				g.drawLine(	(int)(tOld[j][0]*scale)+xOffset,
+				g2d.setColor(fc);				
+				g2d.drawLine(	(int)(tOld[j][0]*scale)+xOffset,
 							(int)(tOld[j][1]*scale)+yOffset,
 							(int)(t[j][0]*scale)+xOffset,
 							(int)(t[j][1]*scale)+yOffset
@@ -51,16 +54,16 @@ public class Simstate {
 			}
 			//rendering planets
 			for(Planet p : thePlanets){
-				p.render(g, xOffset, yOffset, scale);
+				p.render(g2d, xOffset, yOffset, scale);
 			}
 		}
-		g.setColor(Sim.bgColorI);
+		g2d.setColor(Sim.bgColorI);
 		switch (algorithm){
 			case 0:
-				g.drawString("Euler", 20, 40);
+				g2d.drawString("Euler", 20, 40);
 				break;
 			case 1:
-				g.drawString("Verlet", 20, 40);
+				g2d.drawString("Verlet", 20, 40);
 				break;
 		}
 	}

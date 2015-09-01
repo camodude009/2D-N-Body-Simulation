@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 
 public class Planet {
@@ -142,9 +143,9 @@ public class Planet {
 		return c;
 	}
 	
-	public void render(Graphics g, int xOffset, int yOffset, double scale) { //draws a circle
-		g.setColor(c);
-	    g.fillOval((int)((x*scale)-r)+xOffset,(int)((y*scale)-r)+yOffset,(int)(r*2),(int)(r*2));
+	public void render(Graphics2D g2d, int xOffset, int yOffset, double scale) { //draws a circle
+		g2d.setColor(c);
+		g2d.fillOval((int)((x*scale)-r)+xOffset,(int)((y*scale)-r)+yOffset,(int)(r*2),(int)(r*2));
 	}
 	
 }

@@ -2,6 +2,7 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 
@@ -179,19 +180,19 @@ public class Sim extends Canvas implements Runnable{
 	      return;
 	    }	    
 	    Graphics g = strategy.getDrawGraphics(); //getting the graphics object
-	    
+	    Graphics2D g2d = (Graphics2D) g.create();
 	    //drawcalls	
 	    //background
-	    g.setColor(bgColor);
-	    g.fillRect(0,0,dimensions.width,dimensions.height); //filling background white
+	    g2d.setColor(bgColor);
+	    g2d.fillRect(0,0,dimensions.width,dimensions.height); //filling background white
 	    //rendering simstate
-	    simstate.render(g, dimensions.width/2, dimensions.height/2, dimensions.width/scale);
+	    simstate.render(g2d, dimensions.width/2, dimensions.height/2, dimensions.width/scale);
 	    //rendering debug fps/tps
-    	g.setColor(bgColorI);
-    	g.drawString("Tps: " + ticksPerSecond + " Fps: " + framesPerSecond, 20, 20);
+	    g2d.setColor(bgColorI);
+	    g2d.drawString("Tps: " + ticksPerSecond + " Fps: " + framesPerSecond, 20, 20);
 	    
 	    //disposing of the graphics object and sending image to video card   
-	    g.dispose();
+	    g2d.dispose();
 	    strategy.show();
 	}
 	
