@@ -5,15 +5,17 @@ import java.awt.Graphics;
 public class Planet {
 
 	private double x,y,vX,vY,aX,aY,aXOld,aYOld,m,p,r; //x,y coordinates, speed, mass, density, radius
+	private Color c;
 	private Simstate simstate;
 	
-	public Planet(double x, double y, double vX, double vY, double m, double p, Simstate simstate){
+	public Planet(double x, double y, double vX, double vY, double m, double p, Color c, Simstate simstate){
 		this.x = x;
 		this.y = y;
 		this.vX = vX;
 		this.vY = vY;
 		this.m = m;
 		this.p = p;
+		this.c = c;
 		this.simstate = simstate;
 		calculateRadius();
 	}
@@ -136,9 +138,12 @@ public class Planet {
 	public double getMomentumY(){
 		return m*vY;
 	}
+	public Color getColor(){
+		return c;
+	}
 	
 	public void render(Graphics g, int xOffset, int yOffset, double scale) { //draws a circle
-		g.setColor(Color.black);
+		g.setColor(c);
 	    g.fillOval((int)((x*scale)-r)+xOffset,(int)((y*scale)-r)+yOffset,(int)(r*2),(int)(r*2));
 	}
 	

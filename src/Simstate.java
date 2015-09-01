@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
@@ -6,6 +7,7 @@ public class Simstate {
 
 	private ArrayList<Planet> thePlanets;
 	private ArrayList<double[][]> history;
+	private double historyLength = 0;
 	private static int algorithm = 0;
 	
 	public Simstate(){
@@ -21,12 +23,14 @@ public class Simstate {
 		//for every step
 		for(int i = 1; i < history.size()-1; i++){
 			double[][]t = history.get(i);
+			double[][]tOld = history.get(i-1);
 			//drawing lines between past positions of planets
 			for (int j = 0; j < t.length; j++){
-				g.drawLine(	(int)(history.get(i-1)[j][0]*scale)+xOffset,
-							(int)(history.get(i-1)[j][1]*scale)+yOffset,
-							(int)(history.get(i)[j][0]*scale)+xOffset,
-							(int)(history.get(i)[j][1]*scale)+yOffset
+				g.setColor(thePlanets.get(j).getColor());
+				g.drawLine(	(int)(tOld[j][0]*scale)+xOffset,
+							(int)(tOld[j][1]*scale)+yOffset,
+							(int)(t[j][0]*scale)+xOffset,
+							(int)(t[j][1]*scale)+yOffset
 						);
 			}
 		}
@@ -40,8 +44,7 @@ public class Simstate {
 		}
 	}
 	
-	public void tick(double t) { //updates planets
-		history.add(getPlanetPositions());
+	public void tick(double t) { //updates planets	
 		switch (algorithm){
 			case 0:
 				tickEuler(t);
@@ -52,6 +55,18 @@ public class Simstate {
 			default:
 				tickEuler(t);
 				break;
+		}
+		if(historyLength == -1 || history.size() < historyLength/t){
+			history.add(getPlanetPositions());
+		}else if(historyLength == 0){
+			while(history.size() > 0){
+				history.remove(0);
+			}
+		}else{
+			while(history.size() > historyLength/t){
+				history.remove(0);
+			}
+			history.add(getPlanetPositions());
 		}
 	}
 	
@@ -68,8 +83,8 @@ public class Simstate {
 		for(Planet p: thePlanets) p.updateVelocityVerlet(t);
 	}
 	
-	public void addPlanet(double x, double y, double vX, double vY, double m, double p){
-		thePlanets.add(new Planet(x, y, vX, vY, m, p, this));
+	public void addPlanet(double x, double y, double vX, double vY, double m, double p, Color c){
+		thePlanets.add(new Planet(x, y, vX, vY, m, p, c, this));
 		history = new ArrayList<double[][]>();
 	}
 	
@@ -108,6 +123,17 @@ public class Simstate {
 			default:
 				System.out.println("invalid algorithm");
 				break;
+		}
+	}
+	
+	public void setHistoryLength(double l){
+		historyLength = l;
+		if(l == -1){
+			System.out.println("history set to infinite (not recommended!)");
+		}else if(l == 0){
+			System.out.println("history turned off");
+		}else{
+			System.out.println("history set to " + historyLength + "s");
 		}
 	}
 }

@@ -41,6 +41,7 @@ public class Sim extends Canvas implements Runnable{
 	private ArrayList<Double> energy;
 	private ArrayList<Double> time;
 	private boolean collectData = false;
+	private Color bgColor = Color.black;
 	
 	public Sim(boolean d, boolean rt) {
 		debug = d;
@@ -146,7 +147,7 @@ public class Sim extends Canvas implements Runnable{
 			totalElapsedTime += secondsPerTick;
 			if((int)(100*(totalElapsedTime/targetTime)) != completion){
 				completion = (int)(100*(totalElapsedTime/targetTime));
-				System.out.println(completion);
+				System.out.println(completion + "%");
 			}
 		}
 		if(realTime){
@@ -180,7 +181,7 @@ public class Sim extends Canvas implements Runnable{
 	    
 	    //drawcalls	
 	    //background
-	    g.setColor(Color.white);
+	    g.setColor(bgColor);
 	    g.fillRect(0,0,dimensions.width,dimensions.height); //filling background white
 	    //rendering simstate
 	    simstate.render(g, dimensions.width/2, dimensions.height/2, dimensions.width/scale);
@@ -201,8 +202,8 @@ public class Sim extends Canvas implements Runnable{
 		return paused;
 	}
 	
-	public void addPlanet(double x, double y, double vX, double vY, double m, double p){
-		simstate.addPlanet(x, y, vX, vY, m, p);
+	public void addPlanet(double x, double y, double vX, double vY, double m, double p, Color c){
+		simstate.addPlanet(x, y, vX, vY, m, p, c);
 	}
 	public String[] getPlanetsAsText(){
 		return simstate.getPlanetsAsText();
@@ -350,5 +351,13 @@ public class Sim extends Canvas implements Runnable{
 		}else{
 			System.out.println("no data to save");
 		}
+	}
+	
+	public void setBGColor(Color c){
+		bgColor = c;
+	}
+	
+	public void setHistoryLength(double l){
+		simstate.setHistoryLength(l);
 	}
 }

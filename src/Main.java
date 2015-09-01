@@ -1,3 +1,5 @@
+import java.awt.Color;
+
 
 
 
@@ -8,6 +10,15 @@ public class Main {
 	//error strings
 	private static final String ERROR_INVALID_COMMAND = "invalid command";
 	private static final String ERROR_SIM_NOT_PAUSED = "please pause the simulator to make changes";
+	private static final Color[] colors = {	new Color(0,0,0),		//0 : black
+											new Color(255,255,255),	//1 : white
+											new Color(240,85,12),	//2 : orange
+											new Color(239,16,16),	//3 : red
+											new Color(37,181,188),	//4 : turquoise
+											new Color(162,83,196),	//5 : purple
+											new Color(80,206,81),	//6 : green
+											new Color(189,64,170)	//7 : pink
+	};
 	
 	public static void main(String[] args) {
 		boolean debug = false;
@@ -62,8 +73,12 @@ public class Main {
 			setCollectData(args);
 		}else if(cmd[0].equals("savedata")){ //save data
 			saveData(args);
-		}else if(cmd[0].equals("resetdata")){ //save data
+		}else if(cmd[0].equals("resetdata")){ //reset data
 			resetData();
+		}else if(cmd[0].equals("bg")){ //bg color
+			setBGColor(args);
+		}else if(cmd[0].equals("history")){ //planet history (path) length
+			setHistoryLength(args);
 		}else{
 			System.out.println(ERROR_INVALID_COMMAND);
 		}
@@ -90,9 +105,10 @@ public class Main {
 				double y = Double.parseDouble(args[1]);
 				double vX = Double.parseDouble(args[2]);
 				double vY = Double.parseDouble(args[3]);
-				double m = Double.parseDouble(args[4]); //1000/Sim.G;
+				double m = Double.parseDouble(args[4]);
 				double p = Double.parseDouble(args[5]);
-				sim.addPlanet(x, y, vX, vY, m, p);
+				int c = Integer.parseInt(args[6]);
+				sim.addPlanet(x, y, vX, vY, m, p, colors[c]);
 				System.out.println("planet created");
 			}catch(NumberFormatException | NullPointerException | IndexOutOfBoundsException e){
 				System.out.println(ERROR_INVALID_COMMAND);
@@ -226,6 +242,31 @@ public class Main {
 			}
 		}else{
 			System.out.println(ERROR_INVALID_COMMAND);
+		}
+	}
+	public static void setBGColor(String[] args){
+		if(sim.getPaused()){
+			try{
+				int c = Integer.parseInt(args[0]);
+				sim.setBGColor(colors[c]);
+				System.out.println("background color set to " + c);
+			}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
+				System.out.println(ERROR_INVALID_COMMAND);
+			}
+		}else{
+			System.out.println(ERROR_SIM_NOT_PAUSED);
+		}
+	}
+	public static void setHistoryLength(String[] args){
+		if(sim.getPaused()){
+			try{
+				double l = Double.parseDouble(args[0]);
+				sim.setHistoryLength(l);
+			}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
+				System.out.println(ERROR_INVALID_COMMAND);
+			}
+		}else{
+			System.out.println(ERROR_SIM_NOT_PAUSED);
 		}
 	}
 	
