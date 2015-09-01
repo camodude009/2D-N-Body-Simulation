@@ -16,24 +16,45 @@ public class Simstate {
 	}
 	
 	public void render(Graphics g, int xOffset, int yOffset, double scale) {
-		//rendering planets
-		for(Planet p : thePlanets){
-			p.render(g, xOffset, yOffset, scale);
-		}
 		//for every step
 		for(int i = 1; i < history.size()-1; i++){
 			double[][]t = history.get(i);
 			double[][]tOld = history.get(i-1);
 			//drawing lines between past positions of planets
 			for (int j = 0; j < t.length; j++){
-				g.setColor(thePlanets.get(j).getColor());
+				//mixing colors for paths
+				Color p = thePlanets.get(j).getColor(); //planet color
+				Color b = new Color(80,80,153); //grey-blue color
+				//gradient function: -(2x)^2+1 -> gradient from c1 to c2 where c1 is full at 0 and c2 is full at 1/2 the length of the array of points
+				double mix = -1.0*(Math.pow(2.0*(double)(history.size()-i)/(double)history.size(), 2))+1.0; 
+				if(mix < 0) mix = 0; 
+				double mix2 = 1.0-mix;
+				//getting rgb values of the two colors
+				double r1 = p.getRed();
+				double g1 = p.getGreen();
+				double b1 = p.getBlue();				
+				double r2 = b.getRed();
+				double g2 = b.getGreen();
+				double b2 = b.getBlue();
+				//mixing the two based on the the gradient from earlier
+				double rf = r1*mix + r2*mix2;
+				double gf = g1*mix + g2*mix2;
+				double bf = b1*mix + b2*mix2;
+				Color fc = new Color((int)rf, (int)gf, (int)bf);
+				//setting the color and drawing lines from point to point
+				g.setColor(fc);				
 				g.drawLine(	(int)(tOld[j][0]*scale)+xOffset,
 							(int)(tOld[j][1]*scale)+yOffset,
 							(int)(t[j][0]*scale)+xOffset,
 							(int)(t[j][1]*scale)+yOffset
 						);
 			}
+			//rendering planets
+			for(Planet p : thePlanets){
+				p.render(g, xOffset, yOffset, scale);
+			}
 		}
+		g.setColor(Sim.bgColorI);
 		switch (algorithm){
 			case 0:
 				g.drawString("Euler", 20, 40);

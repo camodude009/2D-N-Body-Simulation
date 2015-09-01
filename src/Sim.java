@@ -23,6 +23,8 @@ public class Sim extends Canvas implements Runnable{
 	
 	public final static double G = 6.67408*Math.pow(10, -11);
 	public static double g = G;
+	public static Color bgColor = Color.black;
+	public static Color bgColorI = Color.white;
 	private Simstate simstate;
 	private boolean paused = true;
 	private double stepsToDo = 0.0;
@@ -41,7 +43,6 @@ public class Sim extends Canvas implements Runnable{
 	private ArrayList<Double> energy;
 	private ArrayList<Double> time;
 	private boolean collectData = false;
-	private Color bgColor = Color.black;
 	
 	public Sim(boolean d, boolean rt) {
 		debug = d;
@@ -186,7 +187,7 @@ public class Sim extends Canvas implements Runnable{
 	    //rendering simstate
 	    simstate.render(g, dimensions.width/2, dimensions.height/2, dimensions.width/scale);
 	    //rendering debug fps/tps
-    	g.setColor(Color.black);
+    	g.setColor(bgColorI);
     	g.drawString("Tps: " + ticksPerSecond + " Fps: " + framesPerSecond, 20, 20);
 	    
 	    //disposing of the graphics object and sending image to video card   
@@ -355,6 +356,15 @@ public class Sim extends Canvas implements Runnable{
 	
 	public void setBGColor(Color c){
 		bgColor = c;
+		int r = 255-bgColor.getRed();
+		int g = 255-bgColor.getGreen();
+		int b = 255-bgColor.getBlue();
+		//bgColorI = new Color(r,g,b); perfect invert but looks ugly
+		//choosing white or black depending on average saturation >/< 1/2 the color scale (0.5*255)
+		int gr = (r+g+b)/3;
+		if (gr < 128) bgColorI = Color.black;
+		else bgColorI = Color.white;
+		render();
 	}
 	
 	public void setHistoryLength(double l){

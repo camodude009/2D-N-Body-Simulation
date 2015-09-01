@@ -17,7 +17,8 @@ public class Main {
 											new Color(37,181,188),	//4 : turquoise
 											new Color(162,83,196),	//5 : purple
 											new Color(80,206,81),	//6 : green
-											new Color(189,64,170)	//7 : pink
+											new Color(189,64,170),	//7 : pink
+											new Color(80,80,153)	//8 : gray-blue
 	};
 	
 	public static void main(String[] args) {
