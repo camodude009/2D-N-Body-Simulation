@@ -9,7 +9,7 @@ public class Simstate {
 
 	private ArrayList<Planet> thePlanets;
 	private ArrayList<double[][]> history;
-	private double historyLength = 0;
+	private double historyLength = 0.0;
 	private static int algorithm = 0;
 	
 	public Simstate(){
@@ -52,11 +52,12 @@ public class Simstate {
 							(int)(t[j][1]*scale)+yOffset
 						);
 			}
-			//rendering planets
-			for(Planet p : thePlanets){
-				p.render(g2d, xOffset, yOffset, scale);
-			}
 		}
+		//rendering planets
+		for(Planet p : thePlanets){
+			p.render(g2d, xOffset, yOffset, scale);
+		}
+		//rendering algorithm type
 		g2d.setColor(Sim.bgColorI);
 		switch (algorithm){
 			case 0:
