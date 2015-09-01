@@ -304,7 +304,7 @@ public class Sim extends Canvas implements Runnable{
 		for(int i = 0; i < simstate.getPlanets().size()-1; i++){
 			Planet a = simstate.getPlanets().get(i);
 			for (int j = i+1; j < simstate.getPlanets().size(); j++){
-				Planet b = simstate.getPlanets().get(i);
+				Planet b = simstate.getPlanets().get(j);
 				ePot += a.getEPot(b);
 			}
 		}
