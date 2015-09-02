@@ -371,4 +371,8 @@ public class Sim extends Canvas implements Runnable{
 	public void setHistoryLength(double l){
 		simstate.setHistoryLength(l);
 	}
+	
+	public void setHistoryDetail(int d){
+		simstate.setHistoryDetail(d);
+	}
 }

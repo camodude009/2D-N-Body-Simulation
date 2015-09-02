@@ -10,7 +10,9 @@ public class Simstate {
 	private ArrayList<Planet> thePlanets;
 	private ArrayList<double[][]> history;
 	private double historyLength = 0.0;
-	private static int algorithm = 0;
+	private int tickCount = 0;
+	private int historyDetail = 1;
+	private int algorithm = 0;
 	
 	public Simstate(){
 		thePlanets = new ArrayList<Planet>();
@@ -20,7 +22,7 @@ public class Simstate {
 	public void render(Graphics2D g2d, int xOffset, int yOffset, double scale) {
 		//for every step
 		g2d.setStroke(new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND)); //setting stroke of lines
-		for(int i = 1; i < history.size()-1; i++){
+		for(int i = 1; i < history.size(); i++){
 			double[][]t = history.get(i);
 			double[][]tOld = history.get(i-1);
 			//drawing lines between past positions of planets
@@ -47,9 +49,9 @@ public class Simstate {
 				//setting the color and drawing lines from point to point
 				g2d.setColor(fc);				
 				g2d.drawLine(	(int)(tOld[j][0]*scale)+xOffset,
-							(int)(tOld[j][1]*scale)+yOffset,
-							(int)(t[j][0]*scale)+xOffset,
-							(int)(t[j][1]*scale)+yOffset
+								(int)(tOld[j][1]*scale)+yOffset,
+								(int)(t[j][0]*scale)+xOffset,
+								(int)(t[j][1]*scale)+yOffset
 						);
 			}
 		}
@@ -81,17 +83,20 @@ public class Simstate {
 				tickEuler(t);
 				break;
 		}
-		if(historyLength == -1 || history.size() < historyLength/t){
-			history.add(getPlanetPositions());
-		}else if(historyLength == 0){
-			while(history.size() > 0){
-				history.remove(0);
+		tickCount++;
+		if (tickCount % historyDetail == 0){
+			if(historyLength == -1 || history.size() < historyLength/(t*(double)historyDetail)){
+				history.add(getPlanetPositions());
+			}else if(historyLength == 0){
+				while(history.size() > 0){
+					history.remove(0);
+				}
+			}else{
+				while(history.size() > historyLength/(t*(double)historyDetail)){
+					history.remove(0);
+				}
+				history.add(getPlanetPositions());
 			}
-		}else{
-			while(history.size() > historyLength/t){
-				history.remove(0);
-			}
-			history.add(getPlanetPositions());
 		}
 	}
 	
@@ -159,6 +164,15 @@ public class Simstate {
 			System.out.println("history turned off");
 		}else{
 			System.out.println("history set to " + historyLength + "s");
+		}
+	}
+	
+	public void setHistoryDetail(int d){
+		if(d > 0){
+			historyDetail = d;
+			System.out.println("history detail set to " + d);
+		}else{
+			System.out.println("invalid history detail");
 		}
 	}
 }

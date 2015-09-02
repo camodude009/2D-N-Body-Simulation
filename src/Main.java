@@ -80,6 +80,8 @@ public class Main {
 			setBGColor(args);
 		}else if(cmd[0].equals("history")){ //planet history (path) length
 			setHistoryLength(args);
+		}else if(cmd[0].equals("historydetail")){ //planet history (path) detail (every 'd' tick -> 1 = every tick)
+			setHistoryDetail(args);
 		}else{
 			System.out.println(ERROR_INVALID_COMMAND);
 		}
@@ -263,6 +265,18 @@ public class Main {
 			try{
 				double l = Double.parseDouble(args[0]);
 				sim.setHistoryLength(l);
+			}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
+				System.out.println(ERROR_INVALID_COMMAND);
+			}
+		}else{
+			System.out.println(ERROR_SIM_NOT_PAUSED);
+		}
+	}
+	public static void setHistoryDetail(String[] args){
+		if(sim.getPaused()){
+			try{
+				int d = Integer.parseInt(args[0]);
+				sim.setHistoryDetail(d);
 			}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
 				System.out.println(ERROR_INVALID_COMMAND);
 			}
