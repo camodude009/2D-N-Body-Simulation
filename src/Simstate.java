@@ -1,6 +1,5 @@
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 
@@ -12,6 +11,7 @@ public class Simstate {
 	private double historyLength = 0.0;
 	private int tickCount = 0;
 	private int historyDetail = 1;
+	private boolean historyGradient = false;
 	private int algorithm = 0;
 	
 	public Simstate(){
@@ -27,27 +27,33 @@ public class Simstate {
 			double[][]tOld = history.get(i-1);
 			//drawing lines between past positions of planets
 			for (int j = 0; j < t.length; j++){
-				//mixing colors for paths
-				Color p = thePlanets.get(j).getColor(); //planet color
-				Color b = Sim.bgColor; //bg color
-				//gradient function: -(2x)^2+1 -> gradient from c1 to c2 where c1 is full at 0 and c2 is full at 1/2 the length of the array of points
-				double mix = -1.0*(Math.pow(2.0*(double)(history.size()-i)/(double)history.size(), 2))+1.0; 
-				if(mix < 0) mix = 0; 
-				double mix2 = 1.0-mix;
-				//getting rgb values of the two colors
-				double r1 = p.getRed();
-				double g1 = p.getGreen();
-				double b1 = p.getBlue();				
-				double r2 = b.getRed();
-				double g2 = b.getGreen();
-				double b2 = b.getBlue();
-				//mixing the two based on the the gradient from earlier
-				double rf = Math.sqrt(r1*r1*mix + r2*r2*mix2);
-				double gf = Math.sqrt(g1*g1*mix + g2*g2*mix2);
-				double bf = Math.sqrt(b1*b1*mix + b2*b2*mix2);
-				Color fc = new Color((int)rf, (int)gf, (int)bf);
-				//setting the color and drawing lines from point to point
-				g2d.setColor(fc);				
+				if(historyGradient){ //gradient paths
+					//mixing colors for paths
+					Color p = thePlanets.get(j).getColor(); //planet color
+					Color b = Sim.bgColor; //bg color
+					//gradient function: -(2x)^2+1 -> gradient from c1 to c2 where c1 is full at 0 and c2 is full at 1/2 the length of the array of points
+					double mix = -1.0*(Math.pow(2.0*(double)(history.size()-i)/(double)history.size(), 2))+1.0; 
+					if(mix < 0) mix = 0; 
+					double mix2 = 1.0-mix;
+					//getting rgb values of the two colors
+					double r1 = p.getRed();
+					double g1 = p.getGreen();
+					double b1 = p.getBlue();				
+					double r2 = b.getRed();
+					double g2 = b.getGreen();
+					double b2 = b.getBlue();
+					//mixing the two based on the the gradient from earlier
+					double rf = Math.sqrt(r1*r1*mix + r2*r2*mix2);
+					double gf = Math.sqrt(g1*g1*mix + g2*g2*mix2);
+					double bf = Math.sqrt(b1*b1*mix + b2*b2*mix2);
+					Color fc = new Color((int)rf, (int)gf, (int)bf);
+					//setting the color
+					g2d.setColor(fc);
+				}else{ //non gradient paths
+					//setting the color
+					g2d.setColor(thePlanets.get(j).getColor());
+				}
+				//drawing lines from point to point				
 				g2d.drawLine(	(int)(tOld[j][0]*scale)+xOffset,
 								(int)(tOld[j][1]*scale)+yOffset,
 								(int)(t[j][0]*scale)+xOffset,
@@ -174,5 +180,11 @@ public class Simstate {
 		}else{
 			System.out.println("invalid history detail");
 		}
+	}
+	
+	public void setHistoryGradient(boolean g){
+		historyGradient = g;
+		if(historyGradient)System.out.println("gradient on");
+		else System.out.println("gradient off");
 	}
 }

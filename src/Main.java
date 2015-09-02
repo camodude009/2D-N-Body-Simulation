@@ -82,6 +82,8 @@ public class Main {
 			setHistoryLength(args);
 		}else if(cmd[0].equals("historydetail")){ //planet history (path) detail (every 'd' tick -> 1 = every tick)
 			setHistoryDetail(args);
+		}else if(cmd[0].equals("historygradient")){ //planet history gradient
+			setHistoryGradient(args);
 		}else{
 			System.out.println(ERROR_INVALID_COMMAND);
 		}
@@ -277,6 +279,20 @@ public class Main {
 			try{
 				int d = Integer.parseInt(args[0]);
 				sim.setHistoryDetail(d);
+			}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
+				System.out.println(ERROR_INVALID_COMMAND);
+			}
+		}else{
+			System.out.println(ERROR_SIM_NOT_PAUSED);
+		}
+	}
+	public static void setHistoryGradient(String[] args){
+		if(sim.getPaused()){
+			try{
+				int i = Integer.parseInt(args[0]);
+				if(i == 0) sim.setHistoryGradient(false);
+				else if(i == 1) sim.setHistoryGradient(true);
+				else System.out.println(ERROR_INVALID_COMMAND);
 			}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
 				System.out.println(ERROR_INVALID_COMMAND);
 			}
