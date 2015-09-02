@@ -1,3 +1,4 @@
+--this line is a comment and will be ignored
 realtime 1
 targettime 1000.0
 algo 1
