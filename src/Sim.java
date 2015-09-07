@@ -145,8 +145,8 @@ public class Sim extends Canvas implements Runnable{
 	}
 	
 	private void tick() {
+		totalElapsedTime += secondsPerTick;
 		if(targetTime != 0.0){
-			totalElapsedTime += secondsPerTick;
 			if((int)(100*(totalElapsedTime/targetTime)) != completion){
 				completion = (int)(100*(totalElapsedTime/targetTime));
 				System.out.println(completion + "%");
