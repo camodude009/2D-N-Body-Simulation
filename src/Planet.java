@@ -130,7 +130,7 @@ public class Planet {
 		return 0.5*m*getVS();
 	}
 	public double getEPot(Planet p){
-		return Sim.g*m*p.getM()/getD(p);
+		return -1*Sim.g*m*p.getM()/getD(p);
 	}
 	public double getMomentumX(){
 		return m*vX;
