@@ -8,9 +8,11 @@ Git Repository: https://github.com/camodude009/2D-N-Body-Simulation
 1. Starting
 This program has to be started from the console (for input).
 'java -jar filename.jar'
+For easy access, a batch file ('start.bat') has been provided.
+For a quick demonstration enter '/load figure8.pl' and '/pause' into the terminal.
 
 2. Input
-Commands in the console are prefaced with '/'.
+Commands in the terminal are prefaced with '/'.
 Commands being read from a file are placed in separate lines with no preface. Lines starting with '--' will be ignored.
 Arguments come after the command separated from the command itself and from each other with ' '.
 
