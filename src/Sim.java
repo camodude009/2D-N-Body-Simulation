@@ -126,8 +126,12 @@ public class Sim extends Canvas implements Runnable{
 			        }
 	        	}else{
 	        		if(!paused){
-			    		pause();
 			    		System.out.println("finished");
+			    		pause();
+			    		System.out.println("paused");
+			    		if(collectData){
+		    				printEnergyError();
+		    			}
 		    		}
 	        	}
 		    }else{
@@ -138,6 +142,9 @@ public class Sim extends Canvas implements Runnable{
 			    		System.out.println("finished");
 		    			pause();
 		    			System.out.println("paused");
+		    			if(collectData){
+		    				printEnergyError();
+		    			}
 		    		}
 		    	}
 		    }
@@ -378,5 +385,12 @@ public class Sim extends Canvas implements Runnable{
 	
 	public void setHistoryGradient(boolean g){
 		simstate.setHistoryGradient(g);
+	}
+	
+	public void printEnergyError(){
+		double last = energy.get(energy.size()-1);
+		double initial = energy.get(0);
+		System.out.println("energy error: " + (last-initial));
+		System.out.println("% energy error: " + Math.abs(((last-initial)/initial)));
 	}
 }
