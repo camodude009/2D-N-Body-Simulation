@@ -151,7 +151,7 @@ public class Sim extends Canvas implements Runnable{
 	    }
 	}
 	
-	private void tick() {
+	public void tick() {
 		totalElapsedTime += secondsPerTick;
 		if(targetTime != 0.0){
 			if((int)(100*(totalElapsedTime/targetTime)) != completion){
@@ -173,7 +173,7 @@ public class Sim extends Canvas implements Runnable{
 		}
 	}
 	
-	private void step(){
+	public void step(){
 		simstate.tick(stepSize);
 	}
 	

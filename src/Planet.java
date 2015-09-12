@@ -66,6 +66,13 @@ public class Planet {
 		vY += 0.5*(aY + aYOld)*t;
 	}
 	
+	public void updateRK4(Vector drdt, Vector dvdt, double t){
+		x += drdt.x*t;
+		y += drdt.y*t;
+		vX += dvdt.x*t;
+		vY += dvdt.y*t;
+	}
+	
 	public double getX() {
 		return x;
 	}

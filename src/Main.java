@@ -84,6 +84,8 @@ public class Main {
 			setHistoryDetail(args);
 		}else if(cmd[0].equals("historygradient")){ //planet history gradient
 			setHistoryGradient(args);
+		}else if(cmd[0].equals("step")){ //planet history gradient
+			step();
 		}else{
 			System.out.println(ERROR_INVALID_COMMAND);
 		}
@@ -299,6 +301,9 @@ public class Main {
 		}else{
 			System.out.println(ERROR_SIM_NOT_PAUSED);
 		}
+	}
+	public static void step(){
+		sim.step();
 	}
 	
 }

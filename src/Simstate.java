@@ -85,6 +85,9 @@ public class Simstate {
 			case 1:
 				tickVerlet(t);
 				break;
+			case 2:
+				tickRK4(t);
+				break;
 			default:
 				tickEuler(t);
 				break;
@@ -117,6 +120,90 @@ public class Simstate {
 		for(Planet p: thePlanets) p.updatePositionVerlet(t);
 		for(Planet p: thePlanets) p.updateAccelerationVerlet();
 		for(Planet p: thePlanets) p.updateVelocityVerlet(t);
+	}
+	
+	public void tickRK4(double dt){
+		//initialising
+		State state = new State();
+		Derivative derivative  = new Derivative();
+		for(Planet p: thePlanets){
+			state.r.add(new Vector(p.getX(), p.getY()));
+			state.v.add(new Vector(p.getvX(), p.getvY()));
+		}
+		for(int i = 0; i < state.r.size(); i++){
+			derivative.dr.add(state.v.get(i));
+		}
+		derivative.dv = acceleration(state);
+		//rk4
+		Derivative a,b,c,d;
+		a = evaluate(state, 0.0, derivative);
+		b = evaluate(state, dt*0.5, a);
+		c = evaluate(state, dt*0.5, b);
+		d = evaluate(state, dt, c);
+		ArrayList<Vector> drdt = new ArrayList<Vector>();
+		ArrayList<Vector> dvdt = new ArrayList<Vector>();
+		//drdt = 1/6*(a.dr + 2*(b.dr + c.dr) + d.dr)
+		//dvdt = 1/6*(a.vr + 2*(b.vr + c.vr) + d.vr)
+		for(int i = 0; i < state.r.size(); i++){
+			drdt.add(a.dr.get(i).add(
+						b.dr.get(i).add(
+								c.dr.get(i)
+						)
+						.multiply(2.0))
+					.add(d.dr.get(i))
+					.divide(6.0)
+			);
+			dvdt.add(a.dv.get(i).add(
+					b.dv.get(i).add(
+							c.dv.get(i)
+					)
+					.multiply(2.0))
+				.add(d.dv.get(i))
+				.divide(6.0)
+			);
+			thePlanets.get(i).updateRK4(drdt.get(i), dvdt.get(i), dt);
+		}
+	}
+	
+	public Derivative evaluate(State initial, double dt, Derivative d){
+		State state = new State();
+		//updating the initial state by d * dt
+		//state.r = initial.r + d.dx*dt;
+	    //state.v = initial.v + d.dv*dt;
+		for(int i = 0; i < initial.r.size(); i++){
+			state.r.add(initial.r.get(i).add(d.dr.get(i).multiply(dt)));
+			state.v.add(initial.v.get(i).add(d.dv.get(i).multiply(dt)));
+		}
+		Derivative output = new Derivative();
+		//calculating the derivatives from the new state
+		//output.dr = state.v;
+	    //output.dv = acceleration(state, t+dt);
+		for(int i = 0; i < initial.r.size(); i++){
+			output.dr.add(state.v.get(i));
+		}
+		output.dv = acceleration(state);
+		return output;
+	}
+	
+	public ArrayList<Vector> acceleration(State state){
+		ArrayList<Vector> a = new ArrayList<Vector>();
+		for(int i = 0; i < state.r.size(); i++){
+			Vector r1 = state.r.get(i);
+			Vector acceleration = new Vector(0,0);
+			for(int j = 0; j < state.r.size(); j++){
+				if(i != j){
+					Vector r2 = state.r.get(j);
+					Vector d = r2.subtract(r1);
+					//a = (G*m)/(d*d)
+					//ax = dx*(G*m*)/(d*d*d)
+					acceleration.addS(new Vector(d.x,d.y)
+					.multiply(Sim.g*thePlanets.get(j).getM()/d.length3())
+					);
+				}
+			}
+			a.add(acceleration);
+		}
+		return a;
 	}
 	
 	public void addPlanet(double x, double y, double vX, double vY, double m, double p, Color c){
@@ -155,6 +242,10 @@ public class Simstate {
 			case 1:
 				algorithm = a;
 				System.out.println("using verlet");
+				break;
+			case 2:
+				algorithm = a;
+				System.out.println("using rk4");
 				break;
 			default:
 				System.out.println("invalid algorithm");
