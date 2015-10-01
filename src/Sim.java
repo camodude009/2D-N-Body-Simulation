@@ -32,7 +32,6 @@ public class Sim extends Canvas implements Runnable{
 	private double speed = 60.0;
 	private double stepSize = 1.0;
 	private double stepsPerTick = 1.0;
-	private double secondsPerTick = 1.0;
 	private double scale = 1;
 	private boolean realTime = true;
 	private double totalElapsedTime = 0.0;
@@ -152,13 +151,6 @@ public class Sim extends Canvas implements Runnable{
 	}
 	
 	public void tick() {
-		totalElapsedTime += secondsPerTick;
-		if(targetTime != 0.0){
-			if((int)(100*(totalElapsedTime/targetTime)) != completion){
-				completion = (int)(100*(totalElapsedTime/targetTime));
-				System.out.println(completion + "%");
-			}
-		}
 		if(realTime){
 			stepsToDo += stepsPerTick;
 			while(stepsToDo >= 1){
@@ -168,13 +160,20 @@ public class Sim extends Canvas implements Runnable{
 		}else{
 			step();
 		}
-		if(collectData){
-			collectData();
-		}
 	}
 	
 	public void step(){
+		totalElapsedTime += stepSize;
+		if(targetTime != 0.0){
+			if((int)(100*(totalElapsedTime/targetTime)) != completion){
+				completion = (int)(100*(totalElapsedTime/targetTime));
+				System.out.println(completion + "%");
+			}
+		}
 		simstate.tick(stepSize);
+		if(collectData){
+			collectData();
+		}
 	}
 	
 	public void render() {
@@ -226,7 +225,6 @@ public class Sim extends Canvas implements Runnable{
 		speed = 60.0;
 		stepSize = 1.0;
 		stepsPerTick = 1.0;
-		secondsPerTick = 1.0;
 		scale = 1;
 		totalElapsedTime = 0.0;
 		targetTime = 0.0;
@@ -259,7 +257,6 @@ public class Sim extends Canvas implements Runnable{
 	
 	public void calculateTimings(){
 		stepsToDo = 0;
-		secondsPerTick = speed/tps;
 		double stepsPerSecond = speed/stepSize;		
 		stepsPerTick = stepsPerSecond/tps;
 
