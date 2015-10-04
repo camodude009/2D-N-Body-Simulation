@@ -117,7 +117,6 @@ public class Simstate {
 	}
 	
 	public void tickVerlet(double t){
-		for(Planet p: thePlanets) p.updateAccelerationVerlet();
 		for(Planet p: thePlanets) p.updatePositionVerlet(t);
 		for(Planet p: thePlanets) p.updateAccelerationVerlet();
 		for(Planet p: thePlanets) p.updateVelocityVerlet(t);
@@ -210,6 +209,7 @@ public class Simstate {
 	public void addPlanet(double x, double y, double vX, double vY, double m, double p, Color c){
 		thePlanets.add(new Planet(x, y, vX, vY, m, p, c, this));
 		history = new ArrayList<double[][]>();
+		for(Planet a: thePlanets) a.updateAccelerationVerlet();
 	}
 	
 	public ArrayList<Planet> getPlanets() {
