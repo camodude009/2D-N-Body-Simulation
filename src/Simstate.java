@@ -125,11 +125,11 @@ public class Simstate {
 	public void tickRK4(double dt){
 		//initialising
 		State state = new State();
-		Derivative derivative  = new Derivative();
 		for(Planet p: thePlanets){
 			state.r.add(new Vector(p.getX(), p.getY()));
 			state.v.add(new Vector(p.getvX(), p.getvY()));
 		}
+		Derivative derivative  = new Derivative();
 		for(int i = 0; i < state.r.size(); i++){
 			derivative.dr.add(state.v.get(i));
 		}
@@ -146,39 +146,35 @@ public class Simstate {
 		//dvdt = 1/6*(a.vr + 2*(b.vr + c.vr) + d.vr)
 		for(int i = 0; i < state.r.size(); i++){
 			drdt.add(a.dr.get(i).add(
-						b.dr.get(i).add(
-								c.dr.get(i)
-						)
-						.multiply(2.0))
-					.add(d.dr.get(i))
-					.divide(6.0)
+					 b.dr.get(i).add(c.dr.get(i))
+					 	.multiply(2.0))
+					 .add(d.dr.get(i))
+				.divide(6.0)
 			);
 			dvdt.add(a.dv.get(i).add(
-					b.dv.get(i).add(
-							c.dv.get(i)
-					)
-					.multiply(2.0))
-				.add(d.dv.get(i))
+					 b.dv.get(i).add(c.dv.get(i))
+					 	.multiply(2.0))
+				 	 .add(d.dv.get(i))
 				.divide(6.0)
 			);
 			thePlanets.get(i).updateRK4(drdt.get(i), dvdt.get(i), dt);
 		}
 	}
 	
-	public Derivative evaluate(State initial, double dt, Derivative d){
+	public Derivative evaluate(State init, double dt, Derivative d){
 		State state = new State();
 		//updating the initial state by d * dt
 		//state.r = initial.r + d.dx*dt;
 	    //state.v = initial.v + d.dv*dt;
-		for(int i = 0; i < initial.r.size(); i++){
-			state.r.add(initial.r.get(i).add(d.dr.get(i).multiply(dt)));
-			state.v.add(initial.v.get(i).add(d.dv.get(i).multiply(dt)));
+		for(int i = 0; i < init.r.size(); i++){
+			state.r.add(init.r.get(i).add(d.dr.get(i).multiply(dt)));
+			state.v.add(init.v.get(i).add(d.dv.get(i).multiply(dt)));
 		}
 		Derivative output = new Derivative();
 		//calculating the derivatives from the new state
 		//output.dr = state.v;
 	    //output.dv = acceleration(state, t+dt);
-		for(int i = 0; i < initial.r.size(); i++){
+		for(int i = 0; i < init.r.size(); i++){
 			output.dr.add(state.v.get(i));
 		}
 		output.dv = acceleration(state);
@@ -209,6 +205,7 @@ public class Simstate {
 	public void addPlanet(double x, double y, double vX, double vY, double m, double p, Color c){
 		thePlanets.add(new Planet(x, y, vX, vY, m, p, c, this));
 		history = new ArrayList<double[][]>();
+		//recalculating initial acceleration
 		for(Planet a: thePlanets) a.updateAccelerationVerlet();
 	}
 	
@@ -252,6 +249,9 @@ public class Simstate {
 				System.out.println("invalid algorithm");
 				break;
 		}
+		//update Acceleration in case of Algorithm switch
+		//since RK4 does not store accelerations in Planet
+		for(Planet p: thePlanets) p.updateAccelerationVerlet();
 	}
 	
 	public void setHistoryLength(double l){
