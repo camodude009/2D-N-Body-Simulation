@@ -316,6 +316,10 @@ public class Sim extends Canvas implements Runnable{
 		simstate.setHistoryDetail(d);
 	}
 	
+	public void setDataDetail(int d){
+		simstate.setDataDetail(d);
+	}
+	
 	public void setHistoryGradient(boolean g){
 		simstate.setHistoryGradient(g);
 	}

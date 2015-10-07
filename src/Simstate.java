@@ -11,6 +11,7 @@ public class Simstate {
 	private double historyLength = 0.0;
 	private int tickCount = 0;
 	private int historyDetail = 1;
+	private int dataDetail = 1;
 	private boolean historyGradient = false;
 	private boolean collectData = false;
 	private ArrayList<Double> momentum;
@@ -113,7 +114,7 @@ public class Simstate {
 				history.add(getPlanetPositions());
 			}
 		}
-		if(collectData){
+		if(collectData && (tickCount % dataDetail == 0)){
 			collectData();
 		}
 	}
@@ -346,7 +347,7 @@ public class Simstate {
 			double eKinAv = 0;
 			double ePotAv = 0;
 			double energyAv = 0;
-			s[0] = "Time Momentum E_Kin E_Pot E_Total E_Kin_Average E_Pot_Average E_Total_Average";
+			s[0] = "Time Momentum EKin EPot ETotal EKinAverage EPotAverage ETotalAverage";
 			for(int i = 0; i < momentum.size(); i++){
 				eKinAv += eKin.get(i);
 				ePotAv += ePot.get(i);
@@ -357,6 +358,15 @@ public class Simstate {
 			FileWriter.writeFile(fileName, s);
 		}else{
 			System.out.println("no data to save");
+		}
+	}
+	
+	public void setDataDetail(int d){
+		if(d > 0){
+			dataDetail = d;
+			System.out.println("data detail set to " + d);
+		}else{
+			System.out.println("invalid data detail");
 		}
 	}
 	

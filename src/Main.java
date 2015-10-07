@@ -76,6 +76,8 @@ public class Main {
 			saveData(args);
 		}else if(cmd[0].equals("resetdata")){ //reset data
 			resetData();
+		}else if(cmd[0].equals("datadetail")){ //data collection detail (every 'd' tick -> 1 = every tick)
+			setDataDetail(args);
 		}else if(cmd[0].equals("bg")){ //bg color
 			setBGColor(args);
 		}else if(cmd[0].equals("history")){ //planet history (path) length
@@ -249,6 +251,18 @@ public class Main {
 			}
 		}else{
 			System.out.println(ERROR_INVALID_COMMAND);
+		}
+	}
+	public static void setDataDetail(String[] args){
+		if(sim.getPaused()){
+			try{
+				int d = Integer.parseInt(args[0]);
+				sim.setDataDetail(d);
+			}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
+				System.out.println(ERROR_INVALID_COMMAND);
+			}
+		}else{
+			System.out.println(ERROR_SIM_NOT_PAUSED);
 		}
 	}
 	public static void setBGColor(String[] args){
