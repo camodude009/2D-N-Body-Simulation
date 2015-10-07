@@ -26,6 +26,7 @@ public class Sim extends Canvas implements Runnable{
 	public static double g = G;
 	public static Color bgColor = Color.black;
 	public static Color bgColorI = Color.white;
+	public static double totalElapsedTime = 0.0;
 	private Simstate simstate;
 	private boolean paused = true;
 	private double stepsToDo = 0.0;
@@ -34,15 +35,8 @@ public class Sim extends Canvas implements Runnable{
 	private double stepsPerTick = 1.0;
 	private double scale = 1;
 	private boolean realTime = true;
-	private double totalElapsedTime = 0.0;
 	private double targetTime = 0.0;
 	private int completion = 0;
-	private ArrayList<Double> momentum;
-	private ArrayList<Double> eKin;
-	private ArrayList<Double> ePot;
-	private ArrayList<Double> energy;
-	private ArrayList<Double> time;
-	private boolean collectData = false;
 	
 	public Sim(boolean d, boolean rt) {
 		debug = d;
@@ -128,9 +122,7 @@ public class Sim extends Canvas implements Runnable{
 			    		System.out.println("finished");
 			    		pause();
 			    		System.out.println("paused");
-			    		if(collectData){
-		    				printEnergyError();
-		    			}
+		    			simstate.printEnergyError();
 		    		}
 	        	}
 		    }else{
@@ -141,9 +133,7 @@ public class Sim extends Canvas implements Runnable{
 			    		System.out.println("finished");
 		    			pause();
 		    			System.out.println("paused");
-		    			if(collectData){
-		    				printEnergyError();
-		    			}
+		    			simstate.printEnergyError();
 		    		}
 		    	}
 		    }
@@ -171,9 +161,6 @@ public class Sim extends Canvas implements Runnable{
 			}
 		}
 		simstate.tick(stepSize);
-		if(collectData){
-			collectData();
-		}
 	}
 	
 	public void render() {
@@ -296,67 +283,16 @@ public class Sim extends Canvas implements Runnable{
 		System.out.println("target time: " + targetTime);
 	}
 	
-	public void collectData(){
-		double momentumX = 0;
-		double momentumY = 0;
-		double momentum = 0;
-		double eKin = 0;
-		double ePot = 0;
-		double energy;
-		for(Planet p: simstate.getPlanets()){
-			momentumX += p.getMomentumX();
-			momentumY += p.getMomentumY();
-			eKin += p.getEKin();
-		}
-		for(int i = 0; i < simstate.getPlanets().size()-1; i++){
-			Planet a = simstate.getPlanets().get(i);
-			for (int j = i+1; j < simstate.getPlanets().size(); j++){
-				Planet b = simstate.getPlanets().get(j);
-				ePot += a.getEPot(b);
-			}
-		}
-		energy = eKin + ePot;
-		momentum = Math.sqrt(momentumX*momentumX+momentumY*momentumY);
-		this.time.add(totalElapsedTime);
-		this.momentum.add(momentum);
-		this.eKin.add(eKin);
-		this.ePot.add(ePot);
-		this.energy.add(energy);
-	}
-	
 	public void setCollectData(boolean c){
-		if(!collectData && c){
-			resetData();
-			System.out.println("started collecting data");
-		}else if(collectData && !c){
-			System.out.println("stopped collecting data");
-		}else if(collectData && c){
-			System.out.println("already collecting data");
-		}else{
-			System.out.println("still not collecting data");
-		}
-		collectData = c;
+		simstate.setCollectData(c);
 	}
 	
 	public void resetData(){
-		time = new ArrayList<Double>();
-		momentum = new ArrayList<Double>();
-		eKin = new ArrayList<Double>();
-		ePot = new ArrayList<Double>();
-		energy = new ArrayList<Double>();
-		System.out.println("data reset");
+		simstate.resetData();
 	}
 	
 	public void saveData(String fileName){
-		if(momentum.size() > 0){
-			String[] s = new String[momentum.size()];
-			for(int i = 0; i < momentum.size(); i++){
-				s[i] = time.get(i) + " " + momentum.get(i) + " " + eKin.get(i) + " " + ePot.get(i) + " " + energy.get(i);
-			}
-			FileWriter.writeFile(fileName, s);
-		}else{
-			System.out.println("no data to save");
-		}
+		simstate.saveData(fileName);
 	}
 	
 	public void setBGColor(Color c){
@@ -382,12 +318,5 @@ public class Sim extends Canvas implements Runnable{
 	
 	public void setHistoryGradient(boolean g){
 		simstate.setHistoryGradient(g);
-	}
-	
-	public void printEnergyError(){
-		double last = energy.get(energy.size()-1);
-		double initial = energy.get(0);
-		System.out.println("energy error: " + (last-initial));
-		System.out.println("% energy error: " + Math.abs(((last-initial)/initial)));
 	}
 }

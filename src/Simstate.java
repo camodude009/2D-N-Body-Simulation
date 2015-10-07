@@ -12,6 +12,12 @@ public class Simstate {
 	private int tickCount = 0;
 	private int historyDetail = 1;
 	private boolean historyGradient = false;
+	private boolean collectData = false;
+	private ArrayList<Double> momentum;
+	private ArrayList<Double> eKin;
+	private ArrayList<Double> ePot;
+	private ArrayList<Double> energy;
+	private ArrayList<Double> time;
 	private int algorithm = 0;
 	
 	public Simstate(){
@@ -106,6 +112,9 @@ public class Simstate {
 				}
 				history.add(getPlanetPositions());
 			}
+		}
+		if(collectData){
+			collectData();
 		}
 	}
 	
@@ -279,4 +288,94 @@ public class Simstate {
 		if(historyGradient)System.out.println("gradient on");
 		else System.out.println("gradient off");
 	}
+	
+	public void setCollectData(boolean c){
+		if(!collectData && c){
+			resetData();
+			System.out.println("started collecting data");
+		}else if(collectData && !c){
+			System.out.println("stopped collecting data");
+		}else if(collectData && c){
+			System.out.println("already collecting data");
+		}else{
+			System.out.println("still not collecting data");
+		}
+		collectData = c;
+	}
+	
+	public void resetData(){
+		time = new ArrayList<Double>();
+		momentum = new ArrayList<Double>();
+		eKin = new ArrayList<Double>();
+		ePot = new ArrayList<Double>();
+		energy = new ArrayList<Double>();
+		System.out.println("data reset");
+	}
+	
+	public void collectData(){
+		double momentumX = 0;
+		double momentumY = 0;
+		double momentum = 0;
+		double eKin = 0;
+		double ePot = 0;
+		double energy;
+		for(Planet p: thePlanets){
+			momentumX += p.getMomentumX();
+			momentumY += p.getMomentumY();
+			eKin += p.getEKin();
+		}
+		for(int i = 0; i < thePlanets.size()-1; i++){
+			Planet a = thePlanets.get(i);
+			for (int j = i+1; j < thePlanets.size(); j++){
+				Planet b = thePlanets.get(j);
+				ePot += a.getEPot(b);
+			}
+		}
+		energy = eKin + ePot;
+		momentum = Math.sqrt(momentumX*momentumX+momentumY*momentumY);
+		this.time.add(Sim.totalElapsedTime);
+		this.momentum.add(momentum);
+		this.eKin.add(eKin);
+		this.ePot.add(ePot);
+		this.energy.add(energy);
+	}
+	
+	public void saveData(String fileName){
+		if(momentum.size() > 0){
+			String[] s = new String[momentum.size()+1];
+			double eKinAv = 0;
+			double ePotAv = 0;
+			double energyAv = 0;
+			s[0] = "Time Momentum E_Kin E_Pot E_Total E_Kin_Average E_Pot_Average E_Total_Average";
+			for(int i = 0; i < momentum.size(); i++){
+				eKinAv += eKin.get(i);
+				ePotAv += ePot.get(i);
+				energyAv += energy.get(i);
+				s[i+1] = time.get(i) + " " + momentum.get(i) + " " + eKin.get(i) + " " + ePot.get(i) + " " + energy.get(i) + " "
+						+ (eKinAv/(i+1)) + " " + (ePotAv/(i+1)) + " " + (energyAv/(i+1));
+			}
+			FileWriter.writeFile(fileName, s);
+		}else{
+			System.out.println("no data to save");
+		}
+	}
+	
+	public void printEnergyError(){
+		if(collectData){
+			double last = energy.get(energy.size()-1);
+			double initial = energy.get(0);
+			double average = 0;
+			for(Double e: energy){
+				average += e;
+			}
+			average /= energy.size();
+			System.out.println("Initial/Last");
+			System.out.println("  energy error: " + (last-initial));
+			System.out.println("  % energy error: " + Math.abs(((last-initial)/initial)));
+			System.out.println("Initial/Average");
+			System.out.println("  energy error): " + (average-initial));
+			System.out.println("  % energy error: " + Math.abs(((average-initial)/initial)));
+		}
+	}
+	
 }
