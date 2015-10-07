@@ -19,12 +19,18 @@ public class FileWriter {
 			OutputStream out = Files.newOutputStream(path);
 			PrintWriter writer = new PrintWriter(out);
 			//writing the file
-			for(String s: lines){
-				//System.out.println(s);
-				writer.println(s);
+			int completion = 0;
+			for(int i = 0; i< lines.length; i++){
+				int newCompletion = (int)(100.0*((double)i/(double)lines.length));
+				if(newCompletion != completion){
+					completion = newCompletion;
+					System.out.println(completion + "%");
+				}
+				//System.out.println(lines[i]);
+				writer.println(lines[i]);
 			}
 			writer.close();
-			System.out.println("success");
+			System.out.println("finished writing to file");
 		} catch (IOException e) {
 			System.out.println("error writing file");
 		}

@@ -348,13 +348,21 @@ public class Simstate {
 			double ePotAv = 0;
 			double energyAv = 0;
 			s[0] = "Time Momentum EKin EPot ETotal EKinAverage EPotAverage ETotalAverage";
+			int completion = 0;
 			for(int i = 0; i < momentum.size(); i++){
 				eKinAv += eKin.get(i);
 				ePotAv += ePot.get(i);
 				energyAv += energy.get(i);
 				s[i+1] = time.get(i) + " " + momentum.get(i) + " " + eKin.get(i) + " " + ePot.get(i) + " " + energy.get(i) + " "
 						+ (eKinAv/(i+1)) + " " + (ePotAv/(i+1)) + " " + (energyAv/(i+1));
+				
+				int newCompletion = (int)(100.0*((double)i/(double)momentum.size()));
+				if(newCompletion != completion){
+					completion = newCompletion;
+					System.out.println(completion + "%");
+				}
 			}
+			System.out.println("finished collecting data");
 			FileWriter.writeFile(fileName, s);
 		}else{
 			System.out.println("no data to save");
