@@ -17,7 +17,12 @@ Commands being read from a file are placed in separate lines with no preface. Li
 Arguments come after the command separated from the command itself and from each other with ' '.
 
 3. Variables
-Positions/velocity/acceleration are stored as Double.
+All time is in s.
+Distance in m.
+Velocity in m/s.
+Acceleration in m/s^2.
+Mass in kg.
+Density in kg/m^3.
 Positive x-direction is to the right.
 Positive y-direction is downwards.
 Colors for the background and planets (Integer):
@@ -30,6 +35,7 @@ Colors for the background and planets (Integer):
 6 : green
 7 : pink
 8 : gray-blue
+Position, velocity, mass, etc. are stored as Double.
 Doubles can be read from formats: '4.2', '32' or '4.7E-11'.
 Integers can be read from formats: '46'.
 
@@ -65,7 +71,7 @@ stepsize <double s>
 	seconds delta t for updating positions
 	
 algo <int a>
-	either '0' or '1' corresponding to Euler and Verlet
+	either '0', '1', or '2' corresponding to Euler, Verlet and RK4
 	
 grav <String g>/<double g>
 	gravitational constant either 'G' for 6.67408E-11 or a custom double
@@ -94,7 +100,11 @@ savedata <String filename>
 	time(0) momentum(0) eKin(0) ePot(0) energy(0)
 	time(1) momentum(1) eKin(1) ePot(1) energy(1)
 	...
-
+	
+datadetail <int d>
+	changes how often data is recorded (to preserve memory)
+	saves every d ticks
+	
 resetdata
 	resets internally collected data
 	
