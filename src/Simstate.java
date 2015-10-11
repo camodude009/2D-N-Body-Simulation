@@ -121,9 +121,8 @@ public class Simstate {
 	
 	public void tickEuler(double t){
 		for(Planet p: thePlanets) p.updateAccelerationEuler();
-		for(Planet p: thePlanets) p.updateVelocityEuler(t);	
 		for(Planet p: thePlanets) p.updatePositionEuler(t);
-
+		for(Planet p: thePlanets) p.updateVelocityEuler(t);	
 	}
 	
 	public void tickVerlet(double t){
