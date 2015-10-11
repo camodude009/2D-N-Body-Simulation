@@ -343,7 +343,7 @@ public class Simstate {
 	public void saveData(String fileName){
 		if(momentum.size() > 0){
 			String[] s = new String[momentum.size()+1];
-			s[0] = "Time Momentum EKin EPot ETotal EKinAverage EPotAverage ETotalAverage";
+			s[0] = "Time Momentum EKin EPot ETotal";
 			int completion = 0;
 			for(int i = 0; i < momentum.size(); i++){
 				s[i+1] = time.get(i) + " " + momentum.get(i) + " " + eKin.get(i) + " " + ePot.get(i) + " " + energy.get(i) + " ";
