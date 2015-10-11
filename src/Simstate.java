@@ -343,18 +343,10 @@ public class Simstate {
 	public void saveData(String fileName){
 		if(momentum.size() > 0){
 			String[] s = new String[momentum.size()+1];
-			double eKinAv = 0;
-			double ePotAv = 0;
-			double energyAv = 0;
 			s[0] = "Time Momentum EKin EPot ETotal EKinAverage EPotAverage ETotalAverage";
 			int completion = 0;
 			for(int i = 0; i < momentum.size(); i++){
-				eKinAv += eKin.get(i);
-				ePotAv += ePot.get(i);
-				energyAv += energy.get(i);
-				s[i+1] = time.get(i) + " " + momentum.get(i) + " " + eKin.get(i) + " " + ePot.get(i) + " " + energy.get(i) + " "
-						+ (eKinAv/(i+1)) + " " + (ePotAv/(i+1)) + " " + (energyAv/(i+1));
-				
+				s[i+1] = time.get(i) + " " + momentum.get(i) + " " + eKin.get(i) + " " + ePot.get(i) + " " + energy.get(i) + " ";
 				int newCompletion = (int)(100.0*((double)i/(double)momentum.size()));
 				if(newCompletion != completion){
 					completion = newCompletion;
@@ -381,17 +373,18 @@ public class Simstate {
 		if(collectData){
 			double last = energy.get(energy.size()-1);
 			double initial = energy.get(0);
-			double average = 0;
+			double low = initial;
+			double high = initial;
 			for(Double e: energy){
-				average += e;
+				if(e < low) low = e;
+				if(e > high) high = e;
 			}
-			average /= energy.size();
-			System.out.println("Initial/Last");
+			
+			System.out.println("initial/last");
 			System.out.println("  energy error: " + (last-initial));
-			System.out.println("  % energy error: " + Math.abs(((last-initial)/initial)));
-			System.out.println("Initial/Average");
-			System.out.println("  energy error): " + (average-initial));
-			System.out.println("  % energy error: " + Math.abs(((average-initial)/initial)));
+			System.out.println("  % energy error (initial -> last): " + ((Math.abs(last)-Math.abs(initial))/Math.abs(initial)));
+			System.out.println("high/low");
+			System.out.println("  energy error: " + (high-low));
 		}
 	}
 	
