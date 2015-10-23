@@ -151,7 +151,8 @@ public class Planet {
 	
 	public void render(Graphics2D g2d, int xOffset, int yOffset, double scale) { //draws a circle
 		g2d.setColor(c);
-		g2d.fillOval((int)((x*scale)-r)+xOffset,(int)((y*scale)-r)+yOffset,(int)(r*2),(int)(r*2));
+		double rNew = r* scale;
+		g2d.fillOval((int)((x*scale)-rNew)+xOffset,(int)((y*scale)-rNew)+yOffset,(int)(rNew*2),(int)(rNew*2));
 	}
 	
 }
