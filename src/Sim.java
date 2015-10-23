@@ -346,13 +346,13 @@ public class Sim extends Canvas implements Runnable{
 	
 	public void randomSpawn(int n){
 		for(int i = 0; i < n; i++){
-			double x = (Math.random()*5) - 2.5;
-			double y = (Math.random()*5) - 2.5;
+			double x = (Math.random()*100.0) - 50.0;
+			double y = (Math.random()*100.0) - 50.0;
 			double vX = (Math.random()) - 0.5;
 			double vY = Math.sqrt(1-(vX*vX));
 			if(Math.random()>0.5) vY *= -1;
 			double m = 1.0;
-			double p = 0.0001;
+			double p = 10.0;
 			Color c = Color.black;
 			simstate.addPlanet(x, y, vX, vY, m, p, c);
 		}
