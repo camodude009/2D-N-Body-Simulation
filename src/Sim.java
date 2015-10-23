@@ -188,6 +188,7 @@ public class Sim extends Canvas implements Runnable{
 	    //rendering debug fps/tps
 	    g2d.setColor(bgColorI);
 	    g2d.drawString("Tps: " + ticksPerSecond + " Fps: " + framesPerSecond, 20, 20);
+	    if(paused)g2d.drawString("Paused", 20, 60);
 	    
 	    //disposing of the graphics object and sending image to video card   
 	    g2d.dispose();

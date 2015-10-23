@@ -81,6 +81,9 @@ public class Simstate {
 			case 1:
 				g2d.drawString("Verlet", 20, 40);
 				break;
+			case 2:
+				g2d.drawString("RK4", 20, 40);
+				break;
 		}
 	}
 	
