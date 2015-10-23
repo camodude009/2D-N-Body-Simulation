@@ -23,26 +23,26 @@ public class Sim extends Canvas implements Runnable{
 	private int framesPerSecond = 0;
 	
 	public final static double G = 6.67408*Math.pow(10, -11);
-	public static double g = G;
-	public static Color bgColor = Color.black;
-	public static Color bgColorI = Color.white;
+	public static double g = 1;
+	public static Color bgColor = Color.white;
+	public static Color bgColorI = Color.black;
 	public static double totalElapsedTime = 0.0;
 	private Simstate simstate;
 	private boolean paused = true;
 	private double stepsToDo = 0.0;
-	private double speed = 60.0;
-	private double stepSize = 1.0;
-	private double stepsPerTick = 1.0;
-	private double scale = 1;
-	private boolean realTime = true;
+	private double speed = 1.0;
+	private double stepSize = 0.01;
+	private double stepsPerTick = (speed/stepSize)/tps;
+	private double scale = 10;
+	private boolean realTime = false;
 	private double targetTime = 0.0;
 	private int completion = 0;
+	private double totalTime = 0;
+	private double timerTime = 0;
 	
-	public Sim(boolean d, boolean rt) {
+	public Sim(boolean d) {
 		debug = d;
-		realTime = rt;
 		init();
-		simstate = new Simstate();
 	}
 	
 	public void init(){
@@ -58,12 +58,14 @@ public class Sim extends Canvas implements Runnable{
 	    frame.pack();
 	    frame.setLocationRelativeTo(null);
 	    frame.setVisible(realTime);
+		simstate = new Simstate();
 	}
 	
 	public void start(){
 	    running = true;
 	    thread = new Thread(this);
 	    thread.start();
+	    simstate = new Simstate();
 	}
 	
 	public void stop() {
@@ -134,6 +136,7 @@ public class Sim extends Canvas implements Runnable{
 		    			pause();
 		    			System.out.println("paused");
 		    			simstate.printEnergyError();
+		    			System.out.println("simulation time: " + (totalTime/1000));
 		    		}
 		    	}
 		    }
@@ -160,7 +163,9 @@ public class Sim extends Canvas implements Runnable{
 				System.out.println(completion + "%");
 			}
 		}
+		startTimer();
 		simstate.tick(stepSize);
+		stopTimer();
 	}
 	
 	public void render() {
@@ -206,16 +211,17 @@ public class Sim extends Canvas implements Runnable{
 	
 	public void reset(){
 		simstate = new Simstate();
-		g = G;
+		g = 1;
 		paused = true;
 		stepsToDo = 0.0;
-		speed = 60.0;
-		stepSize = 1.0;
-		stepsPerTick = 1.0;
-		scale = 1;
+		speed = 1.0;
+		stepSize = 0.01;
+		calculateTimings();
+		scale = 10;
 		totalElapsedTime = 0.0;
 		targetTime = 0.0;
 		resetData();
+		resetTimer();
 		render();
 		System.out.println("sim reset");
 	}
@@ -322,5 +328,32 @@ public class Sim extends Canvas implements Runnable{
 	
 	public void setHistoryGradient(boolean g){
 		simstate.setHistoryGradient(g);
+	}
+	
+	public void startTimer(){
+		timerTime = System.currentTimeMillis();
+	}
+	
+	public void stopTimer(){
+		totalTime += System.currentTimeMillis() - timerTime;
+	}
+	
+	public void resetTimer(){
+		timerTime = 0;
+		totalTime = 0;
+	}
+	
+	public void randomSpawn(int n){
+		for(int i = 0; i < n; i++){
+			double x = (Math.random()*5) - 2.5;
+			double y = (Math.random()*5) - 2.5;
+			double vX = (Math.random()) - 0.5;
+			double vY = Math.sqrt(1-(vX*vX));
+			if(Math.random()>0.5) vY *= -1;
+			double m = 1.0;
+			double p = 0.0001;
+			Color c = Color.black;
+			simstate.addPlanet(x, y, vX, vY, m, p, c);
+		}
 	}
 }

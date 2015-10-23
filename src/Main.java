@@ -31,7 +31,7 @@ public class Main {
 			}
 		}
 		
-	    sim = new Sim(debug, false);
+	    sim = new Sim(debug);
 	    sim.start();
 	    
 	    while(true){
@@ -88,6 +88,8 @@ public class Main {
 			setHistoryGradient(args);
 		}else if(cmd[0].equals("step")){ //planet history gradient
 			step();
+		}else if(cmd[0].equals("rand")){ //spawn n random planets
+			randomSpawn(args);
 		}else{
 			System.out.println(ERROR_INVALID_COMMAND);
 		}
@@ -118,7 +120,6 @@ public class Main {
 				double p = Double.parseDouble(args[5]);
 				int c = Integer.parseInt(args[6]);
 				sim.addPlanet(x, y, vX, vY, m, p, colors[c]);
-				System.out.println("planet created");
 			}catch(NumberFormatException | NullPointerException | IndexOutOfBoundsException e){
 				System.out.println(ERROR_INVALID_COMMAND);
 			}
@@ -318,6 +319,19 @@ public class Main {
 	}
 	public static void step(){
 		sim.step();
+	}
+	public static void randomSpawn(String[] args){
+		if(sim.getPaused()){
+			try{
+				int i = Integer.parseInt(args[0]);
+				if(i > 0) sim.randomSpawn(i);
+				else System.out.println(ERROR_INVALID_COMMAND);
+			}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
+				System.out.println(ERROR_INVALID_COMMAND);
+			}
+		}else{
+			System.out.println(ERROR_SIM_NOT_PAUSED);
+		}
 	}
 	
 }

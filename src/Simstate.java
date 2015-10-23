@@ -8,7 +8,7 @@ public class Simstate {
 
 	private ArrayList<Planet> thePlanets;
 	private ArrayList<double[][]> history;
-	private double historyLength = 0.0;
+	private double historyLength = 0;
 	private int tickCount = 0;
 	private int historyDetail = 1;
 	private int dataDetail = 1;
@@ -216,6 +216,7 @@ public class Simstate {
 		history = new ArrayList<double[][]>();
 		//recalculating initial acceleration
 		for(Planet a: thePlanets) a.updateAccelerationVerlet();
+		System.out.println("planet created");
 	}
 	
 	public ArrayList<Planet> getPlanets() {
