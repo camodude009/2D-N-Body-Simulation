@@ -126,6 +126,13 @@ historygradient <int g>
 	0: gradient turned off
 	1: gradient turned on
 	
+step
+	makes one simulator step with the current stepsize
+
+rand <int n>
+	creates n number of planets with mass 1, random velocity vector with magnitude 1
+	and random x/y positions between -50 and +50
+
 6. Example file (Figure-8, 3-Body Choreography)
 --this is a comment and will be ignored
 realtime 1
