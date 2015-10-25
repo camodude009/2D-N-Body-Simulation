@@ -40,6 +40,11 @@ public class Sim extends Canvas implements Runnable{
 	private double totalTime = 0;
 	private double timerTime = 0;
 	private int totalSteps = 0;
+	private ArrayList<Integer> queue = new ArrayList<Integer>();
+	private ArrayList<Integer> origionalQueue = new ArrayList<Integer>();
+	private ArrayList<Double> timings = new ArrayList<Double>();
+	private int testIterations = 1;
+	private int currentIterations = 0;
 	
 	public Sim(boolean d) {
 		debug = d;
@@ -126,6 +131,8 @@ public class Sim extends Canvas implements Runnable{
 			    		pause();
 			    		System.out.println("paused");
 		    			simstate.printEnergyError();
+		    			System.out.println();
+		    			System.out.println();
 		    		}
 	        	}
 		    }else{
@@ -133,11 +140,31 @@ public class Sim extends Canvas implements Runnable{
 		    		if(totalElapsedTime < targetTime || targetTime == 0.0){
 		    			tick();
 		    		}else{
-			    		System.out.println("finished");
-		    			pause();
-		    			System.out.println("paused");
+		    			currentIterations++;
+		    			if(origionalQueue.size() > 0)System.out.println("finished iteration " + currentIterations);
+			    		else System.out.println("finished");
+		    			if(!paused)pause();
 		    			simstate.printEnergyError();
 		    			System.out.println("simulated " + totalSteps + " steps in "+ (totalTime/1000) + "s");
+		    			timings.add(totalTime/1000);
+		    			System.out.println();
+		    			System.out.println();
+		    			if(queue.size() > 0){
+		    				partialReset();
+		    				if(currentIterations >= testIterations){
+		    					currentIterations = 0;
+		    					queue.remove(0);
+		    				}
+		    				if(queue.size() > 0){
+		    					randomSpawn(queue.get(0));
+		    					pause();
+		    				}else{
+		    					System.out.println();
+		    					System.out.println();
+		    					System.out.println();
+		    					System.out.println("finished testing simulation time");
+		    				}
+		    			}
 		    		}
 		    	}
 		    }
@@ -213,9 +240,10 @@ public class Sim extends Canvas implements Runnable{
 	}
 	
 	public void reset(){
+		System.out.println("sim reset");
+		if(!paused)paused = true;
 		simstate = new Simstate();
 		g = 1;
-		paused = true;
 		stepsToDo = 0.0;
 		speed = 1.0;
 		stepSize = 0.01;
@@ -224,10 +252,27 @@ public class Sim extends Canvas implements Runnable{
 		totalElapsedTime = 0.0;
 		targetTime = 0.0;
 		totalSteps = 0;
+		queue = new ArrayList<Integer>();
+		origionalQueue = new ArrayList<Integer>();
+		timings = new ArrayList<Double>();
+		currentIterations = 0;
 		resetData();
 		resetTimer();
 		render();
-		System.out.println("sim reset");
+	}
+	
+	public void partialReset(){
+		System.out.println("sim partial reset");
+		if(!paused)paused = true;
+		int algorithm = simstate.getAlgorithm();
+		simstate = new Simstate();
+		simstate.setAlgorithm(algorithm);
+		stepsToDo = 0.0;
+		totalElapsedTime = 0.0;
+		totalSteps = 0;
+		resetData();
+		resetTimer();
+		render();
 	}
 	
 	public boolean changeSpeed(String[] args){
@@ -358,6 +403,47 @@ public class Sim extends Canvas implements Runnable{
 			double p = 10.0;
 			Color c = Color.black;
 			simstate.addPlanet(x, y, vX, vY, m, p, c);
+		}
+		System.out.println("spawned " + n + " planets");
+	}
+	
+	public void testSimTime(int[] t){
+		testIterations = t[0];
+		if (testIterations < 1){
+			testIterations = 1;
+			System.out.println("number of iterations set to 1");
+		}else{
+			System.out.println("number of iterations set to " + testIterations);
+		}
+		for(int i = 1; i < t.length; i++){
+			queue.add(t[i]);
+			origionalQueue.add(t[i]);
+		}
+		randomSpawn(queue.get(0));
+		currentIterations = 0;
+	}
+	
+	public void saveTimings(String fileName){
+		if(timings.size() > 0){
+			String[] s = new String[origionalQueue.size()];
+			int completion = 0;
+			for(int i = 0; i < origionalQueue.size(); i++){
+				double average = 0;
+				for(int j = i * testIterations; j < i * testIterations + testIterations; j++){
+					average += timings.get(j);
+				}
+				average /= (double)testIterations;
+				s[i] = origionalQueue.get(i) + " " + average;
+				int newCompletion = (int)(100.0*((double)i/(double)origionalQueue.size()));
+				if(newCompletion != completion){
+					completion = newCompletion;
+					System.out.println(completion + "%");
+				}
+			}
+			System.out.println("finished collecting data");
+			FileWriter.writeFile(fileName, s);
+		}else{
+			System.out.println("no data to save");
 		}
 	}
 }

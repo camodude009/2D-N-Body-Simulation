@@ -1,9 +1,4 @@
-rand 40
-targettime 1000.0
+algo 0
+targettime 999.999
 stepsize 0.001
-scale 50
-speed 0.25
-history 0
-historydetail 1000
-realtime 0
-pause
+testsimtime 5 1 2 3 4 5 10 20 30 40 50 60 70 80 90 100

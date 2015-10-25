@@ -266,6 +266,9 @@ public class Simstate {
 		//since RK4 does not store accelerations in Planet
 		for(Planet p: thePlanets) p.updateAccelerationVerlet();
 	}
+	public int getAlgorithm(){
+		return algorithm;
+	}
 	
 	public void setHistoryLength(double l){
 		historyLength = l;

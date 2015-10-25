@@ -90,6 +90,10 @@ public class Main {
 			step();
 		}else if(cmd[0].equals("rand")){ //spawn n random planets
 			randomSpawn(args);
+		}else if(cmd[0].equals("testsimtime")){ //tests the time a simulation with n randomly spawned planets
+			testSimTime(args);
+		}else if(cmd[0].equals("savetimings")){ //save timings
+			saveTimings(args);
 		}else{
 			System.out.println(ERROR_INVALID_COMMAND);
 		}
@@ -333,5 +337,40 @@ public class Main {
 			System.out.println(ERROR_SIM_NOT_PAUSED);
 		}
 	}
-	
+	public static void testSimTime(String[] args){
+		if(sim.getPaused()){
+			try{
+				int[] t = new int[args.length];
+				boolean c = true;
+				for(int i = 0; i < args.length; i++){
+					int a = Integer.parseInt(args[i]);
+					if(a > 0){
+						t[i] = a;
+					}else{
+						c = false;
+					}
+				}
+				if(c && args.length > 1){
+					sim.testSimTime(t);
+				}else{
+					System.out.println(ERROR_INVALID_COMMAND);
+				}
+			}catch(ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
+				System.out.println(ERROR_INVALID_COMMAND);
+			}
+		}else{
+			System.out.println(ERROR_SIM_NOT_PAUSED);
+		}
+	}
+	public static void saveTimings(String[] args){
+		if(args.length == 1){
+			if(sim.getPaused()){
+				sim.saveTimings(args[0]);
+			}else{
+				System.out.println(ERROR_SIM_NOT_PAUSED);
+			}
+		}else{
+			System.out.println(ERROR_INVALID_COMMAND);
+		}
+	}
 }

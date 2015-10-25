@@ -133,6 +133,19 @@ rand <int n>
 	creates n number of planets with mass 1, random velocity vector with magnitude 1
 	and random x/y positions between -50 and +50
 
+testsimtime <int i> <int n1> <int n2> ...
+	i number of iterations: simulations will run this many times and the timings calculated will be the average of these iterations
+	n1, n2, ... number of planets
+	simulates systems with different amount of planets to test simulation time taken
+	this should be the last command in an instruction file
+	only works in simulation mode (not realtime)
+	
+savetimings <String filename>
+	saves timings collected to a file with the format:
+	numberofplanets(1) time(1)
+	numberofplanets(2) time(2)
+	...
+
 6. Example file (Figure-8, 3-Body Choreography)
 --this is a comment and will be ignored
 realtime 1
