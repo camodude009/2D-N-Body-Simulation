@@ -39,6 +39,7 @@ public class Sim extends Canvas implements Runnable{
 	private int completion = 0;
 	private double totalTime = 0;
 	private double timerTime = 0;
+	private int totalSteps = 0;
 	
 	public Sim(boolean d) {
 		debug = d;
@@ -136,7 +137,7 @@ public class Sim extends Canvas implements Runnable{
 		    			pause();
 		    			System.out.println("paused");
 		    			simstate.printEnergyError();
-		    			System.out.println("simulation time: " + (totalTime/1000));
+		    			System.out.println("simulated " + totalSteps + " steps in "+ (totalTime/1000) + "s");
 		    		}
 		    	}
 		    }
@@ -163,6 +164,7 @@ public class Sim extends Canvas implements Runnable{
 				System.out.println(completion + "%");
 			}
 		}
+		totalSteps++;
 		startTimer();
 		simstate.tick(stepSize);
 		stopTimer();
@@ -221,6 +223,7 @@ public class Sim extends Canvas implements Runnable{
 		scale = 10;
 		totalElapsedTime = 0.0;
 		targetTime = 0.0;
+		totalSteps = 0;
 		resetData();
 		resetTimer();
 		render();
