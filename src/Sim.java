@@ -198,28 +198,28 @@ public class Sim extends Canvas implements Runnable{
 	}
 	
 	public void render() {
-		//checking dimensions
+		// checking dimensions
 		dimensions = new Dimension(frame.getWidth(), frame.getHeight());
-		//getting buffer strategy
+		// getting buffer strategy
 		BufferStrategy strategy = this.getBufferStrategy(); 		
 	    if(strategy == null){
 	      createBufferStrategy(3);
 	      return;
 	    }	    
-	    Graphics g = strategy.getDrawGraphics(); //getting the graphics object
+	    Graphics g = strategy.getDrawGraphics(); // getting the graphics object
 	    Graphics2D g2d = (Graphics2D) g.create();
-	    //drawcalls	
-	    //background
+	    // drawcalls	
+	    // background
 	    g2d.setColor(bgColor);
-	    g2d.fillRect(0,0,dimensions.width,dimensions.height); //filling background white
-	    //rendering simstate
+	    g2d.fillRect(0,0,dimensions.width,dimensions.height); // filling background white
+	    // rendering simstate
 	    simstate.render(g2d, dimensions.width/2, dimensions.height/2, dimensions.width/scale);
-	    //rendering debug fps/tps
+	    // rendering debug fps/tps
 	    g2d.setColor(bgColorI);
 	    g2d.drawString("Tps: " + ticksPerSecond + " Fps: " + framesPerSecond, 20, 20);
 	    if(paused)g2d.drawString("Paused", 20, 60);
 	    
-	    //disposing of the graphics object and sending image to video card   
+	    // disposing of the graphics object and sending image to video card   
 	    g2d.dispose();
 	    strategy.show();
 	}
@@ -355,8 +355,9 @@ public class Sim extends Canvas implements Runnable{
 		int r = 255-bgColor.getRed();
 		int g = 255-bgColor.getGreen();
 		int b = 255-bgColor.getBlue();
-		//bgColorI = new Color(r,g,b); perfect invert but looks ugly
-		//choosing white or black depending on average saturation >/< 1/2 the color scale (0.5*255)
+		// bgColorI = new Color(r,g,b); perfect invert but looks ugly
+		// choosing white or black depending on average saturation
+		// >/< 1/2 the color scale (0.5*255)
 		int gr = (r+g+b)/3;
 		if (gr < 128) bgColorI = Color.black;
 		else bgColorI = Color.white;
@@ -429,12 +430,14 @@ public class Sim extends Canvas implements Runnable{
 			int completion = 0;
 			for(int i = 0; i < origionalQueue.size(); i++){
 				double average = 0;
-				for(int j = i * testIterations; j < i * testIterations + testIterations; j++){
+				for(int j = i * testIterations; 
+						j < i * testIterations + testIterations; j++){
 					average += timings.get(j);
 				}
 				average /= (double)testIterations;
 				s[i] = origionalQueue.get(i) + " " + average;
-				int newCompletion = (int)(100.0*((double)i/(double)origionalQueue.size()));
+				int newCompletion = 
+					(int)(100.0*((double)i/(double)origionalQueue.size()));
 				if(newCompletion != completion){
 					completion = newCompletion;
 					System.out.println(completion + "%");

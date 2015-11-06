@@ -1,7 +1,11 @@
 import java.util.ArrayList;
 
 public class State {
-	public ArrayList<Vector> r = new ArrayList<Vector>(), 
-							 v = new ArrayList<Vector>(); //positions and velocities
-	public State(){}
+	// Positionen und Geschwindigkeiten eines Systems
+	public ArrayList<Vector> 
+			r = new ArrayList<Vector>(),
+			v = new ArrayList<Vector>();
+
+	public State() {
+	}
 }
