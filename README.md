@@ -1,7 +1,5 @@
 # 2D-N-Body-Simulation
 A 2D body simulation for testing different algorithms for simulating planetary motion.
-Created by: Camodude009 @Felix Fischer
-Contact: felix.ma.fischer@gmail.com
 Git Repository: https://github.com/camodude009/2D-N-Body-Simulation
 
 
